@@ -518,6 +518,4 @@ class Main extends Program {
             connectionMenu();
         }
     }
-
-    int pauvre;
 }
