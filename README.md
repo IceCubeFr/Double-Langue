@@ -11,11 +11,11 @@ DoubleLangue est un jeu ludo-pédagogique permettant de s'entraîner en anglais 
 Deux modes de jeu
 ---
 ### Le mode Histoire
-Plongez dans une aventure plein en rebondissements en alliant stratégie et réflexion
+Incarnez un personnage atterit dans un monde féérique qui a totalement oublié qui il était
 ### Le mode entraînement
 Entraînez-vous aux défis que vous rencontrerez dans le mode histoire et soyez prêt à finir le jeu !
 # Notes mise à jour 1.0.1a
-La version 1.1a est la 2eme et dernière version Alpha avant la release 1.0. Voici une liste non exhaustive des modifications :
+La version 1.0.1a est la 2eme et dernière version Alpha avant la release 1.0. Voici une liste non exhaustive des modifications :
 - Développement et rédaction du mode Histoire
 - Ajout d'un mot de passe, nécessaire pour la connexion et local
 - Ajout d'un onglet Paramètres permettant de modifier certains paramètres
