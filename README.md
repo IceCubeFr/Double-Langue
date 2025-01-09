@@ -14,7 +14,7 @@ Deux modes de jeu
 Plongez dans une aventure plein en rebondissements en alliant stratégie et réflexion
 ### Le mode entraînement
 Entraînez-vous aux défis que vous rencontrerez dans le mode histoire et soyez prêt à finir le jeu !
-# Notes mise à jour 1.1a
+# Notes mise à jour 1.0.1a
 La version 1.1a est la 2eme et dernière version Alpha avant la release 1.0. Voici une liste non exhaustive des modifications :
 - Développement et rédaction du mode Histoire
 - Ajout d'un mot de passe, nécessaire pour la connexion et local
