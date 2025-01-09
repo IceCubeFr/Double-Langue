@@ -1,10 +1,66 @@
-Dialogue 1
-C'est grave ce qu'il se passe
-olalala
+﻿As-tu déjà été dans une situation où tu te réveilles dans une forêt et que tu ne te souviens de rien de ta vie ?
+Et bien c’est ton cas maintenant, [user]. Te voilà dans une grande forêt avec aucun souvenir de ta vie passée.
+La seule chose dont tu te souviens est ton prénom, [user]. . .
+–"Le pire dans l’amnésie, ce n’est pas de perdre la mémoire, c’est de perdre l’envie de la retrouver." — Albert Einstein–
+_
+Pendant que j’étais en train de marcher dans la forêt j’ai été surpris de rencontrer quelqu’un, fin plutôt devrais-je dire un truc flottant.
+??? : “Bien le bonjour ! Je suis Fey la fée ! Tu dois être [user] n’est-ce pas ? Je vais te guider pour que tu sortes de cette forêt et pour que tu puisses regagner ta mémoire.”
+Fey la fée : “Première chose tu vas devoir répondre à des questions pour pouvoir avancer dans la forêt et au passage retrouver quelques bouts de ta mémoire.”
 
-Dialogue 2 
-Cette fois ci ça va un peu mieux
-Je dois gagner
+30
+Fey la fée : “Woah tu as trouvé ! Maintenant si tu regardes autour de toi tu verras un chemin au sol qui te mènera jusqu'à ta prochaine destination, on se retrouve là-bas [user] !”
+En regardant autour de moi je constate bien un chemin qui se dessine au sol, je me retourne pour essayer d’avoir un peu plus d’informations grâce à Fey mais elle n’est plus là.
+Je décide donc de suivre le chemin qui s’est dessiné au sol.
+En arrivant sur place je remarque que je me trouve près d’un lac au milieu de la forêt.
+Fey n’étant toujours pas là, je décide de me poser au sol et de me reposer en fermant mes yeux quelques instants.
+Fey la fée : “On dirait que t’as trouvé ton chemin [user] ! Nous allons pouvoir passer à la prochaine question.”
+En entendant Fey je me lève pour pouvoir ensuite vite partir d’ici.
 
-Dialogue 3 uyqzdteshijoviougy
-Pourquoi tout ce bordel
+31
+Fey la fée : “Fantastique ! T’as trouvé la bonne réponse.”
+Fey la fée : “Cette réponse va te donner un bout de ta mémoire ainsi qu’un bout du chemin vers la sortie de la forêt. Tiens toi prêt à voir un de tes souvenirs. Bonne chance [user].”
+Lorsqu’elle prononce ces dernières paroles je me sens comme tomber et en regardant autour de moi il fait un noir complet.
+–I was walking down the street in Canterbury which is in the United Kingdom. I was heading toward a small parc near the castle to take a pic-nic there and then take a look inside the castle.--
+Après ce vague souvenir, je me réveille et me rends compte que je suis au sol.
+Je me relève secoué mais décide de suivre mon chemin pour sortir vite de cette forêt.
+Je regarde au sol et voit le chemin tracé, je me mets donc en route vers le chemin.
+. . .
+Une fois arrivée là-bas, je constate que Fey y est déjà, et qu’elle m'attendait.
+Fey la fée : “Ah te voilà [user] ! J’ai bien cru que j’allais attendre encore longtemps.”
+Fey la fée : “J’imagine que tu dois être un peu secoué par ce qu’il s'est passé, mais nous devons continuer si tu veux sortir d’ici alors nous allons continuer, cette fois-ci tu vas devoir répondre à deux questions.”
+
+32
+
+33
+Fey la fée : “On dirait que tu t’en sors à merveille [user] ! Un souvenir t’as été débloqué ainsi qu’un autre bout du chemin.”
+Fey la fée : “A tout de suite !”
+Je regarde Fey disparaître en un clin d'œil. Je ferme les yeux attendant mon souvenir d’arriver.
+–I was eating my pic-nic on the grass. When done I got up and went toward the castle for a little visit. The castle was very big and it will take a while to take a look at the inside of the castle.--
+De retour à la réalité, je me rends vite compte que je suis une fois de plus au sol.
+Je me relève et décide de regarder au sol pour la suite de mon chemin.
+Je vois le chemin un peu plus loin et je me mets vite en route pour le suivre.
+. . .
+Arrivant à la fin du chemin, j'aperçois Fey au loin, elle me voit et me fait signe de venir vers elle.
+Je m’avance vers elle pour attendre ma ou mes prochaines questions.
+Fey la fée : “Je vois que tu t’es réveillé [user], maintenant que t’es là on va pouvoir passer à la suite des questions.”
+Fey la fée : “Cette fois-ci tu auras le droit à trois questions.”
+
+34
+
+35
+
+36
+Fey la fée : “Ahah tu as réussi [user] ! Tu vas recevoir l’avant dernier de tes souvenirs ainsi que la fin du chemin pour aller à la sortie de la forêt.”
+Fey la fée : “Tu n’as plus besoin de moi maintenant, je vais donc te laisser. Bon voyage à toi [user] !”
+En disant ces dernières paroles je la vois disparaître à nouveau. Je décide de fermer les yeux pour l’arrivée de mon nouveau souvenir.
+–I was almost at the end of my visit to the castle. I was going up the stairs of one of the towers of the castle. When I was at the end of the stairs I could take a good look outside from this view. I was surprised to hear a loud sound behind me near the stairs. I turned around to take a look at what was going on.--
+Je me réveille toujours au sol. Je me lève et décide de suivre le chemin qui s’était tracé au sol pour m'emmener vers la sortie.
+. . .
+Une fois arrivée à la fin du chemin, je découvre une grande clairière avec quelque chose au centre, l’objet semble sombre. Pour avoir une meilleure vision sur ce que c’est je décide de m’en approcher.
+En m’approchant petit à petit je découvre qu’il s’agit d’une pierre tombale. Et en m’approchant encore plus près, je découvre que sur cette pierre tombale il y a inscrit “[user]”, mon prénom.
+Comme si j’étais attiré par cette pierre tombale, je me trouve à avoir envie de la toucher. Une fois que le bout de mes doigts touchent la pierre le noir complet envahit ma vision et un nouveau souvenir prend place.
+–As I turned around to take a look at the loud sound, I was met face to face with a man in all black. I couldn’t see his face as he was wearing a mask. The man took hold of me and put me face to face with the stairs. The man let go of the hold he had on me and I feel myself fall down. After that it was all dark. I was now dead.--
+I wake up sweating. Now I know what happened and who I am.
+Now here I am stuck in this world, dead.
+I decide to take a nap near my tombstone, I lay down and close my eyes, wanting all of this to be a dream.
+??? : “Sweet dream [user]...”

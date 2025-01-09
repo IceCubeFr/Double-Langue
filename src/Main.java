@@ -4,15 +4,16 @@ import extensions.CSVFile;
 class Main extends Program {
     final String QUESTIONS_PATH = "./files/questions.csv";
     final String TRAINING_LEVELS_PATH = "./files/trainingLevels.csv";
-    final String STORY_LEVELS_PATH = "./files/storyLevels.csv";
     final String PLAYERS_PATH = "./files/players.csv";
     final String DRAPEAU_PATH = "./ressources/drapeau_en.txt";
     final String DIALOGUES_PATH = "./files/dialogues.txt";
+    final String PIERRE_PATH = "./ressources/pierre.txt";
+    final String FEY_LA_FEE = "" + ANSI_PURPLE + "Fey la fée" + ANSI_RESET;
+    final String ANSI_GREY = "\u001b[90m";
 
     boolean loadedSuccessfully = true;
 
     int[][] trainingLevels = new int[0][0];
-    int[][] storyLevels = new int[0][0];
 
     Question[] questionList = new Question[0];
 
@@ -54,6 +55,13 @@ class Main extends Program {
         }
     } // Cette fonction affichera un drapeau britannique en ASCII sauvegardé sur un fichier texte
 
+    void affichagePierreTombale() {
+        extensions.File f = newFile(PIERRE_PATH);
+        while(ready(f)) {
+            println(readLine(f));
+        }
+    }
+
     void affichageText(String txt, int delai) {
         for(int indice = 0; indice < length(txt); indice++) {
             print(charAt(txt, indice));
@@ -72,10 +80,41 @@ class Main extends Program {
         println("");
     } // Affichage personnalisé de texte
 
-    void affichageDialogue(String[] tab) {
-        for(int indice = 0; indice < length(tab); indice++) {
-            affichageText(tab[indice]);
+    void affichageText(String txt, int delai, boolean retourALaLigne) {
+        for(int indice = 0; indice < length(txt); indice++) {
+            print(charAt(txt, indice));
+            delay(50);
         }
+        delay(delai);
+        if(retourALaLigne) {
+            println("");
+        }
+    } // Affichage personnalisé de texte
+
+    void affichageDialogue(String txt) {
+        int indice = 0;
+        while(indice < length(txt)) {
+            // Vérification si le texte correspond à une mise en page spéciale 
+
+            if(indice < length(txt) - 10 && equals(substring(txt, indice, indice + 10), "Fey la fée")) {
+                affichageText(FEY_LA_FEE, 0, false);
+                indice = indice + 10;
+            } else if (indice == 0 && charAt(txt, 0) == '–') {
+                print(ANSI_ITALIC + ANSI_GREY);
+            } else if(indice < length(txt) - 6 && equals(substring(txt, indice, indice + 6), "[user]")) {
+                affichageText(ANSI_GREEN + actualPlayer.username + ANSI_RESET, 0, false);
+                indice = indice + 6;
+            } else if(indice == 0 && charAt(txt, 0) == '_') {
+                delay(3000);
+                clearScreen();
+                return;
+            }
+            print(charAt(txt, indice));
+            delay(50);
+            indice++;
+        }
+        delay(1000);
+        println(ANSI_RESET);
     }
 
     // Initialisation des fichiers CSV
@@ -144,24 +183,6 @@ class Main extends Program {
         }
     } // Cette fonction initialisera les variables trainingLevels à partir du fichier CSV correspondant
 
-    void initStoryLevels() {
-        print("[LOAD] Story    ");
-        try {
-            CSVFile f = loadCSV(STORY_LEVELS_PATH);
-            storyLevels = new int[rowCount(f)][columnCount(f)];
-            for(int ligne = 0; ligne < length(storyLevels, 1); ligne++) {
-                for(int colonne = 0; colonne < length(storyLevels, 2); colonne++) {
-                    storyLevels[ligne][colonne] = stringToInt(getCell(f, ligne, colonne));
-                }
-            }
-            println("\t" + ANSI_GREEN + "OK " + ANSI_RESET + length(storyLevels) + " niveaux trouvés");
-        }
-        catch (Exception e) {
-            loadedSuccessfully = false;
-            println("\t" + ANSI_RED + "ERREUR " + ANSI_RESET + "Initialisation des niveaux histoire interrompue : " + e);
-        }
-    } // Cette fonction initialisera les variables trainingLevels à partir du fichier CSV correspondant
-
     void initPlayer() {
         print("[LOAD] Données joueurs");
         try {
@@ -175,7 +196,7 @@ class Main extends Program {
                 Player p = newPlayer(player[0], " ");
                 p.trainingCompleted = stringToInt(player[1]);
                 p.storyCompleted = stringToInt(player[2]);
-                if (length(player) == 4) {
+                if (length(player) == 4) { // Evite les erreurs dues au changement de version
                     p.mdp = player[3];
                 }
                 playerList[ligne] = p;
@@ -193,23 +214,25 @@ class Main extends Program {
         try {
             File f = newFile(DIALOGUES_PATH);
             int maxText = 0; // Recherche du plus grand nombre de texte dans un dialogue de niveau histoire
-            int len = 0; 
+            int len = 1;
+            int part = 1;
             while(ready(f)) {
                 String l = readLine(f);
-                if(equals(l, "")) {
+                if(equals(l, ". . .")) {
                     if(maxText < len) { maxText = len;}
                     len = 0;
+                    part++;
                 } else {
                     len++;
                 }
             }
             f = newFile(DIALOGUES_PATH);
-            dialogues = new String[length(storyLevels)][maxText];
+            dialogues = new String[part][maxText];
             int indicex = 0;
             int indicey = 0;
             while(ready(f)) {
                 String lig = readLine(f);
-                if(equals(lig, "")) {
+                if(equals(lig, ". . .")) {
                     indicex++;
                     indicey = 0;
                 } else {
@@ -238,6 +261,7 @@ class Main extends Program {
             players[indice] = player;
         }
         saveCSV(players, PLAYERS_PATH);
+        affichageText("[SAVE] Sauvegarde terminée !", 0);
     } // Sauvegarde dans le fichier players.csv de la liste des joueurs
 
     void addAndSavePlayer(Player p) {
@@ -249,16 +273,6 @@ class Main extends Program {
         playerList = newList;
         savePlayerCSV();
     } // Ajoute un joueur dans la liste de player
-
-    void saveActualPlayer() {
-        println("Sauvegarde . . .");
-        for(int indice = 0; indice < length(playerList); indice++) {
-            if(equals(actualPlayer.username, playerList[indice].username)) {
-                playerList[indice] = actualPlayer;
-            }
-        }
-        println("Sauvegardé");
-    } // Fonction modifiant le player de la playerList par le playerActuel avec la progression modifiée
 
     // Fonctions diverses
 
@@ -305,8 +319,9 @@ class Main extends Program {
 
     String cryptage(String txt, char key) {
         String mdp = "";
+        String username = actualPlayer.username;
         for(int indice = 0; indice < length(txt); indice++) {
-            mdp = mdp + (char)(charAt(txt, indice) + key);
+            mdp = mdp + (char)(charAt(txt, indice) + key + charAt(username, indice%length(username)));
         }
         return mdp;
     }
@@ -317,7 +332,10 @@ class Main extends Program {
         print("Confirmez votre mot de passe : ");
         String saisie2 = saisieReponse();
         if (!equals(saisie, saisie2)) {
-            println("Les deux mots de passe ne correspondent pas.");
+            println(ANSI_RED + "Les deux mots de passe ne correspondent pas." + ANSI_RESET);
+            return newMDP();
+        } else if(equals(saisie, "")) {
+            println(ANSI_RED + "Le mot de passe ne peut pas être vide." + ANSI_RESET);
             return newMDP();
         } else {
             return cryptage(saisie, '¤');
@@ -325,83 +343,104 @@ class Main extends Program {
     }
 
     void connectionMenu() {
+        boolean valide = false;
         affichageDrapeau();
         affichageText(ANSI_RED + "Bienvenue sur DoubleLangue !" + ANSI_RESET + "\nPour commencer, merci d'entrer votre nom d'utilisateur.\n" + ANSI_BLUE + "Votre progression sera sauvegardée par le biais de ce nom." + ANSI_RESET);
-        print("Nom d'utilisateur (exit pour quitter) : ");
-        String nom = toUpperCase(readString());
-        if (playerExists(nom)) {
-            actualPlayer = getPlayerByName(nom);
-            affichageText("Utilisateur " + actualPlayer.username + " trouvé.");
-            
-            // Vérification que les niveaux complétés ne dépassent pas le nombre de niveaux existants 
-            if (actualPlayer.trainingCompleted > length(trainingLevels)) {
-                actualPlayer.trainingCompleted = 0;
-                affichageText("Une incohérence a été remarquée dans les niveaux d'entraînements complétés. Nous avons remis tout ça en ordre ne vous en faites pas ;)");
-            }
-            if (actualPlayer.storyCompleted > length(storyLevels)) {
-                actualPlayer.storyCompleted = 0;
-                affichageText("Une incohérence a été remarquée dans les niveaux histoire complétés. Nous avons remis tout ça en ordre ne vous en faites pas ;)");
-            }
-            if (equals(actualPlayer.mdp, " ")) {
-                affichageText("Aucun mot de passe n'a été définit.");
-                actualPlayer.mdp = newMDP();
-            } else {
-                affichageText("Entrez votre mot de passe : ");
-                String saisie = saisieReponse();
-                if (!equals(cryptage(saisie, '¤'), actualPlayer.mdp)) {
-                    affichageText("Mot de passe incorrect. Si vous avez oublié votre mot de passe, contactez nos équipes.");
-                    connectionMenu();
-                    return;
+        while(!valide) {
+            print("Nom d'utilisateur (exit pour quitter) : ");
+            String nom = toUpperCase(readString());
+            if (playerExists(nom)) {
+                actualPlayer = getPlayerByName(nom);
+                affichageText("Utilisateur " + actualPlayer.username + " trouvé.");
+                
+                // Vérification que les niveaux complétés ne dépassent pas le nombre de niveaux existants 
+                if (actualPlayer.trainingCompleted > length(trainingLevels)) {
+                    actualPlayer.trainingCompleted = 0;
+                    affichageText("Une incohérence a été remarquée dans les niveaux d'entraînements complétés. Nous avons remis tout ça en ordre ne vous en faites pas ;)");
                 }
-            }
-            mainMenu();
-        } else {
-            if (equals(nom, "EXIT")) {
-                affichageText("Fermeture du jeu . . .");
-                savePlayerCSV();
-                println("[SAVE] Joueurs sauvegardés");
-                System.exit(0);
-            } else {
-                affichageText("Aucun utilisateur trouvé.");
-                print("Souhaitez-vous créer un nouvel utilisateur du nom de " + nom + " ? (o/n) ");
-                String validation = saisieReponse();
-                if (isYes(validation)) {
-                    String mdp = newMDP();
-                    affichageText("Création du compte en cours . . .");
-                    Player p = newPlayer(nom, mdp);
-                    addAndSavePlayer(p);
-                    actualPlayer = p;
-                    affichageText("Compte créé ! Votre progression sera sauvegardée !");
-                    affichageText("Bienvenue sur DoubleLangue !");
-                    mainMenu();
+                if (actualPlayer.storyCompleted > length(dialogues)) {
+                    actualPlayer.storyCompleted = 0;
+                    affichageText("Une incohérence a été remarquée dans les niveaux histoire complétés. Nous avons remis tout ça en ordre ne vous en faites pas ;)");
+                }
+                if (equals(actualPlayer.mdp, " ")) { // Connexion au jeu avec un ancien compte (sans mot de passe)
+                    affichageText("Aucun mot de passe n'a été définit.");
+                    actualPlayer.mdp = newMDP();
+                    valide = true;
                 } else {
-                    connectionMenu();
+                    affichageText("Entrez votre mot de passe : ", 0, false);
+                    String saisie = saisieReponse();
+                    if (!equals(cryptage(saisie, '¤'), actualPlayer.mdp)) {
+                        affichageText(ANSI_RED + "Mot de passe incorrect." + ANSI_RESET);
+                    } else {
+                        valide = true;
+                    }
+                }
+            } else {
+                if (equals(nom, "EXIT")) {
+                    affichageText("Fermeture du jeu . . .");
+                    savePlayerCSV();
+                    println("[SAVE] Joueurs sauvegardés");
+                    System.exit(0);
+                } else if(equals(nom, "")) {
+                    affichageText(ANSI_RED + "Le nom d'utilisateur ne peut pas être vide." + ANSI_RESET);
+                }
+                else {
+                    affichageText("Aucun utilisateur trouvé.");
+                    print("Souhaitez-vous créer un nouvel utilisateur du nom de " + nom + " ? (o/n) ");
+                    String validation = saisieReponse();
+                    if (isYes(validation)) {
+                        String mdp = newMDP();
+                        affichageText("Création du compte en cours . . .");
+                        Player p = newPlayer(nom, mdp);
+                        addAndSavePlayer(p);
+                        actualPlayer = p;
+                        affichageText("Compte créé ! Votre progression sera sauvegardée !", 0);
+                        affichageText("Bienvenue sur DoubleLangue !", 0);
+                        valide = true;
+                    }
                 }
             }
         }
-        
+        savePlayerCSV();
+        mainMenu();
     } // Cette fonction affichera le menu de connexion. Elle fera appel à la fonction saisieConnection, playerExists et getPlayerByName. Elle initialisera également la valeur actualPlayer 
     
     void mainMenu() {
         affichageDrapeau();
-        affichageText("Bienvenue " + ANSI_GREEN + actualPlayer.username + ANSI_RESET + "!");
-        affichageText("Choisissez votre mode de jeu :\n0. Déconnexion\n1. Mode histoire (Progression : " + (actualPlayer.storyCompleted * 100 / length(storyLevels)) + " %)\n2. Mode entraînement (Progression : " + (actualPlayer.trainingCompleted * 100 / length(trainingLevels)) + " %)\n3. Paramètres");
-        int option = saisieNombreEntier(3);
+        affichageText("Bienvenue " + ANSI_GREEN + actualPlayer.username + ANSI_RESET + "!", 0);
+        affichageText("Choisissez votre mode de jeu :\n0. Déconnexion\n1. Mode histoire (Progression : " + (actualPlayer.storyCompleted * 100 / length(dialogues)) + " %)\n2. Mode entraînement (Progression : " + (actualPlayer.trainingCompleted * 100 / length(trainingLevels)) + " %)\n3. Règles du jeu\n4. Paramètres", 0);
+        affichageText("Entrez votre choix : ", 0, false);
+        int option = saisieNombreEntier(4);
         switch (option) {
             case 0:
                 affichageText("Votre progression va être sauvegardée. Veuillez patienter . . .");
-                saveActualPlayer();
                 affichageText("Progression sauvegardée ! A très vite !");
                 connectionMenu();
             case 1:
                 clearScreen();
-                playStory(actualPlayer.storyCompleted);
+                story(actualPlayer.storyCompleted);
             case 2:
                 trainingModeSelection();
             case 3:
+                rules();
+            case 4:
                 settings();
         }
     } // Menu de sélection du mode de jeu
+
+    void rules() {
+        clearScreen();
+        affichageText(ANSI_BOLD + "Bienvenue sur " + ANSI_GREEN + "DoubleLangue !" + ANSI_RESET);
+        affichageText("Les règles du jeu sont très simple ! Une question vous sera posée. Elle peut être de type QCM ou d'entrée.", 0);
+        affichageText("Entrez la réponse que vous pensez correcte (le nombre de la réponse pour une QCM, ou le texte entier dans les questions d'entrées)", 0);
+        affichageText("Attention ! Vous avez un nombre limité d'erreur ! Vous avez le droit à 5 tentatives par niveau d'entraînement et 3 tentatives par question du mode histoire.", 0);
+        affichageText("Soyez prudent ! Les questions de type entrée sont sensibles aux accents ! Les raccourcis sont également considérés comme faux, même s'ils peuvent être vrais dans certaines situations orales.", 0);
+        affichageText("Vous trouverez plus d'informations sur notre wiki : https://github.com/IceCubeFr/Double-Langue/wiki", 0);
+        affichageText("Crédits : Florian GAVOILLE - Développement / Chloé TISON - Développement et rédaction", 0);
+        affichageText("Appuyez sur " + ANSI_ITALIC + "entrée" + ANSI_RESET + " pour continuer", 0, false);
+        readString();
+        mainMenu();
+    }
 
     int saisieNombreEntier(int maxOption) {
         boolean valide = false;
@@ -447,28 +486,28 @@ class Main extends Program {
 
     void trainingModeSelection() {
         if(actualPlayer.trainingCompleted == 0) {
-            affichageText("Bienvenue dans le module d'entraînement.");
-            affichageText("Ici, vous trouverez des niveaux pour vous entraîner au mode histoire.");
-            affichageText("Commençons par le premier niveau !");
+            affichageText("Bienvenue dans le module d'entraînement.", 0);
+            affichageText("Ici, vous trouverez des niveaux pour vous entraîner au mode histoire.", 0);
+            affichageText("Commençons par le premier niveau !", 0);
             playTraining(0);
         } else {
             affichageText("Lors de votre dernière session, vous êtes arrivés au niveau " + actualPlayer.trainingCompleted + " sur les " + length(trainingLevels) + " disponibles.");
             int max;
             if(actualPlayer.trainingCompleted >= length(trainingLevels)) {
-                affichageText("0. Retour\n1. Rejouer un niveau");
+                affichageText("0. Retour\n1. Rejouer un niveau", 0);
                 max = 1;
             } else {
-                affichageText("0. Retour\n1. Rejouer un niveau\n2. Continuer vers le niveau " + (actualPlayer.trainingCompleted + 1));
+                affichageText("0. Retour\n1. Rejouer un niveau\n2. Continuer vers le niveau " + (actualPlayer.trainingCompleted + 1), 0);
                 max = 2;
             }
+            affichageText("Entrez un nombre : ", 0, false);
             int saisie = saisieNombreEntier(2);
             switch(saisie) {
                 case 0:
-                    saveActualPlayer();
                     savePlayerCSV();
                     mainMenu();
                 case 1:
-                    affichageText("Vous pouvez rejouer un niveau que vous avez déjà terminé. Choisissez un niveau : ", 0);
+                    affichageText("Vous pouvez rejouer un niveau que vous avez déjà terminé. Choisissez un niveau : ", 0, false);
                     trainingSelection(0);
                 case 2:
                     if(actualPlayer.trainingCompleted < length(trainingLevels)) {playTraining(actualPlayer.trainingCompleted);}
@@ -506,7 +545,8 @@ class Main extends Program {
             limite++;
         }
         choices += "==========================";
-        affichageText(choices);
+        affichageText(choices, 0);
+        affichageText("Saisissez votre choix : ", 0, false);
 
         int saisie = saisieNombreEntier(limite);
         switch(saisie) {
@@ -547,6 +587,19 @@ class Main extends Program {
         return tentatives;
     }
 
+    boolean playQuestion(Question q, int tentatives) {
+        String[] messages = new String[]{FEY_LA_FEE + " : \"C'est bien ce que je pensais, tu n'es pas à la hauteur... Reviens quand tu seras prêt.\"", FEY_LA_FEE + " : \"Attention, si tu ne réponds pas correctement, je ne vais pas pouvoir te laisser continuer\"", FEY_LA_FEE + " : \"Oh oh, on dirait que ce n’est pas la bonne réponse, réessaie !\""};
+        affichageInput(q);
+        while(tentatives > 0) {
+            if(isGoodInputAnswer(q, saisieReponse())) {
+                return true;
+            }
+            tentatives = tentatives - 1;
+            affichageText(messages[tentatives]);
+        }
+        return false;
+    }
+
     void playTraining(int level) { 
         Question[] niveau = new Question[length(trainingLevels, 2)];
         int tentatives = 5;
@@ -568,7 +621,6 @@ class Main extends Program {
                 affichageText("Congrats ! Vous avez complètement terminé ce niveau ! Vous n'avez pas perdu la main ;)");
             }
             // Sauvegarde du joueur
-            saveActualPlayer();
             savePlayerCSV();
             trainingModeSelection();
         } else {
@@ -577,65 +629,72 @@ class Main extends Program {
         }
     } // Fonction jouant les questions d'un niveau
 
-    void playStory(int level) {
-        if (length(storyLevels) == actualPlayer.storyCompleted) {
-            affichageText("Vous avez terminé le mode histoire ! Félicitations ! Souhaitez-vous recommencer ? Attention ! Votre progression sera écrasée ! (o/n)");
+    void playStory(int completion, int tentatives) {
+        String[] dialogue = dialogues[completion];
+        int indice = 0;
+        boolean success = true;
+        while(indice < length(dialogue) && success) {
+            String actualText = dialogue[indice];
+            if(actualText == null) {
+                indice = length(dialogue);
+            } else if (equals(actualText, "")) {
+                indice++;
+                actualText = dialogue[indice];
+                Question question = questionList[stringToInt(actualText)];
+                success = playQuestion(question, tentatives);   
+            } else {
+                affichageDialogue(actualText);
+            }
+            indice++;
+        }
+        if(success) {
+            actualPlayer.storyCompleted++;
+            endOfTurn();
+        } else {
+            mainMenu();
+        }
+        return;
+    }
+
+    void endOfTurn() {
+        if(actualPlayer.storyCompleted == 4) {
+            affichagePierreTombale();
+            delay(3000);
+            for(int indice = 0; indice < 50; indice++) {
+                println("");
+                delay(200);
+            }
+        }
+        affichageText(".", 500, false);
+        affichageText(".", 500, false);
+        affichageText(".", 500);
+        savePlayerCSV();
+        affichageText("Vous venez de terminer la partie " + actualPlayer.storyCompleted + " du mode histoire. Souhaitez-vous continuer ? (o/n)",0, false);
+        if(isYes(saisieReponse())) {story(actualPlayer.storyCompleted);}
+        else {mainMenu();}
+        return;
+    }
+
+    void story(int level) {
+        if (length(dialogues) == level) {
+            affichageText("Vous avez terminé le mode histoire ! Félicitations ! Souhaitez-vous recommencer ? Attention ! Votre progression sera écrasée ! (o/n)", 0, false);
             if(isYes(saisieReponse())) {
                 actualPlayer.storyCompleted = 0;
                 affichageText("Progression écrasée. See you soon et bonne chance dans votre quête !");
             } else {
                 affichageText("Vous pourrez recommencer l'histoire quand vous voulez en revenant ici ! See you soon !");
             }
-            saveActualPlayer();
             savePlayerCSV();
             mainMenu();
             return;
         }
-        affichageDialogue(dialogues[level]);
-        Question[] niveau = new Question[length(storyLevels, 2)];
-        int tentatives = 5;
 
-        // Récupération des questions
-        for(int indice = 0; indice < length(niveau); indice++) {
-            niveau[indice] = questionList[storyLevels[level][indice]];
-        }
-
-        // Lancement du jeu
-        tentatives = play(niveau, tentatives);
-
-        // Vérification victoire ou défaite
-        if(tentatives > 0) {
-            actualPlayer.storyCompleted++;
-            if (actualPlayer.storyCompleted == length(storyLevels)) {
-                affichageText("Vous avez terminé le mode histoire ! Félicitations ! Souhaitez-vous recommencer ? Attention ! Votre progression sera écrasée ! (o/n)");
-                if(isYes(saisieReponse())) {
-                    actualPlayer.storyCompleted = 0;
-                    affichageText("Progression écrasée. See you soon et bonne chance dans votre quête !");
-                } else {
-                    affichageText("Vous pourrez recommencer l'histoire quand vous voulez en revenant ici ! See you soon !");
-                }
-                saveActualPlayer();
-                savePlayerCSV();
-                mainMenu();
-                return;
-            }
-            saveActualPlayer();
-            affichageText("Chapitre " + actualPlayer.storyCompleted + " terminé. Souhaitez-vous continuer ? (o/n)");
-            if (isYes(saisieReponse())) {
-                playStory(actualPlayer.storyCompleted);
-            } else {
-                affichageText("See you soon !");
-                savePlayerCSV();
-                mainMenu();
-            }
-        } else {
-            affichageText("You failed. Vous n'avez pas réussi à terminer votre quête. Retentez votre chance après vous être entraîné !", 3000);
-            mainMenu();
-        }
+        playStory(level, 3);
     }
 
     void settings() {
-        affichageText("Choisissez un paramètre :\n0. Retour\n1. Modifier votre pseudo\n2. Réinitialiser le profil\n3. Définir un nouveau mot de passe.");
+        affichageText("Choisissez un paramètre :\n0. Retour\n1. Modifier votre pseudo\n2. Réinitialiser le profil\n3. Définir un nouveau mot de passe.", 0);
+        affichageText("Saisissez votre choix : ", 0, false);
         int entree = saisieNombreEntier(3);
         switch(entree) {
             case 0:
@@ -656,7 +715,7 @@ class Main extends Program {
     }
 
     void editUsername() {
-        affichageText("Entrez votre nouveau nom d'utilisateur (entrez annuler pour revenir en arrière) : ");
+        affichageText("Entrez votre nouveau nom d'utilisateur (entrez annuler pour revenir en arrière) : ", 0, false);
         String newUsername = toUpperCase(saisieReponse());
         if (equals(newUsername, "annuler")) {
             affichageText("Annulation . . .");
@@ -665,10 +724,9 @@ class Main extends Program {
             affichageText("Nom d'utilisateur déjà utilisé.");
             editUsername();
         } else {
-            affichageText("Êtes vous sur de vouloir modifier votre nom d'utilisateur (Ancien : " + actualPlayer.username + " / Nouveau : " + newUsername + ") ? (o/n)");
+            affichageText("Êtes vous sur de vouloir modifier votre nom d'utilisateur (Ancien : " + actualPlayer.username + " / Nouveau : " + newUsername + ") ? (o/n)", 0, false);
             if(isYes(saisieReponse())) {
                 actualPlayer.username = newUsername;
-                saveActualPlayer();
                 affichageText("Votre nom d'utilisateur a été mis à jour !");
             } else {
                 affichageText("Annulation . . .");
@@ -678,12 +736,11 @@ class Main extends Program {
     }
 
     void doubleCheckReset() {
-        affichageText("Êtes-vous sur de vouloir réinitialiser votre profil ? Cette action est irréversible. (o/n)");
+        affichageText("Êtes-vous sur de vouloir réinitialiser votre profil ? Cette action est irréversible. (o/n)", 0, false);
         if(isYes(saisieReponse())) {
-            affichageText("Dernière chance d'annuler la réinitialisation. Souhaitez-vous vraiment tout supprimer ? (o/n)");
+            affichageText("Dernière chance d'annuler la réinitialisation. Souhaitez-vous vraiment tout supprimer ? (o/n)", 0, false);
             if(isYes(saisieReponse())) {
-                actualPlayer = newPlayer(actualPlayer.username, actualPlayer.mdp);
-                saveActualPlayer();
+                actualPlayer = newPlayer(actualPlayer.username, actualPlayer.mdp)
                 savePlayerCSV();
                 affichageText("Progression réinitialisée.", 2000);
             }
@@ -693,6 +750,11 @@ class Main extends Program {
 
     void affichageInput(Question q, int nbQuestion) {
         affichageText("Question " + nbQuestion + " : " + q.question);
+        print("Votre réponse : ");
+    } // Méthode affichant les questions de type INPUT
+
+    void affichageInput(Question q) {
+        affichageDialogue(q.question);
         print("Votre réponse : ");
     } // Méthode affichant les questions de type INPUT
 
@@ -710,7 +772,6 @@ class Main extends Program {
         // Initialisation des fichiers CSV
         initQuestion();
         initTrainingLevels();
-        initStoryLevels();
         initPlayer();
         initDialogues();
 

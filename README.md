@@ -10,11 +10,19 @@ DoubleLangue est un jeu ludo-pédagogique permettant de s'entraîner en anglais 
 
 Deux modes de jeu
 ---
-Le mode Histoire vous plongeant dans un univers médiéval à la conquête du royaume de France, et le mode entraînement pour vous préparer aux combats du mode histoire. 
+### Le mode Histoire
+Plongez dans une aventure plein en rebondissements en alliant stratégie et réflexion
+### Le mode entraînement
+Entraînez-vous aux défis que vous rencontrerez dans le mode histoire et soyez prêt à finir le jeu !
+# Notes mise à jour 1.0
+La version 1.0 est la première version stable de **DoubleLangue** et en voici les principales fonctionnalités : 
+- Modes entraînement et histoire fonctionnels
+- Création locale de compte avec mot de passe crypté
+- Possibilité de modifier le nom d'utilisateur et le mot de passe
+- Possibilité de réinitialiser sa progression
+- Possibilité de rejouer des niveaux d'entraînement déjà terminés  
 
-# Notes version alpha
-- Le mode histoire n'est pas encore disponible. Commencez votre entraînement sur nos 6 niveaux d'entraînement !  
-- Des bugs pourraient persister. Si c'est le cas, merci de nous les transmettre via l'une des adresses de contact ci-dessus  
+N'hésitez pas à proposer vos idées pour le jeu et à rapporter les bugs que vous trouvez via la catégorie "Issues" de notre GitHub : https://github.com/IceCubeFr/Double-Langue/issues
 
 # Utilisation de DoubleLangue
 
@@ -28,4 +36,5 @@ Permet la compilation des fichiers présents dans 'src' et création des fichier
 ```
 ./run.sh
 ```
-Permet le lancement du jeu
+Permet le lancement du jeu  
+Vous trouverez plus de tutoriels et d'informations sur le jeu sur notre wiki : 
