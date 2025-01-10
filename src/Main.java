@@ -29,6 +29,15 @@ class Main extends Program {
     // Fonctions de convertion de type ---------------------------------------------------------------------------------------
 
     QuestionType stringToQuestionType(String type) {
+        /**
+         * Renvoie l'enum QuestionType correspondant au type de question mit en paramètre au format chaîne de caractère
+         * 
+         * Elle permet la conversion d'un type String à un type QuestionType, principalement pour l'initialisation d'un fichier CSV
+         * 
+         * @param type : Type de question au format chaîne de caractère
+         * @return Type de question au format QuestionType
+         */
+
         if(equals(type, "QCM")) {
             return QuestionType.QCM;
         } else if (equals(type, "INPUT")) {
@@ -36,9 +45,17 @@ class Main extends Program {
         } else {
             return null;
         }
-    } // Conversion, si possible, d'un String en enu QuestionType
+    }
 
     String questionTypeToString(QuestionType type) {
+        /**
+         * Renvoie la chaîne de caractère correspondant au type de Question, la chaîne vide si aucun ne correspond.
+         * 
+         * Elle permet la conversion d'un type QuestionType à un type String, principalement pour la sauvegarde en CSV
+         * 
+         * @param type : Type de question au format QuestionType
+         * @return Type de question au format chaîne de caractère
+         */
         if(type == QuestionType.QCM) {
             return "QCM";
         } else if (type == QuestionType.INPUT) {
@@ -46,44 +63,78 @@ class Main extends Program {
         } else {
             return "";
         }
-    } // Conversion d'un enum QuestionType en String
+    }
     
     // Fonctions d'affichage ---------------------------------------------------------------------------------------
 
     void affichageDrapeau() {
+        /**
+         * Affiche le drapeau britannique
+         * Le drapeau est stocké dans le dossier ressources au format .txt
+         */
         clearScreen();
         extensions.File f = newFile(DRAPEAU_PATH);
         while(ready(f)) {
             println(readLine(f));
         }
-    } // Cette fonction affichera un drapeau britannique en ASCII sauvegardé sur un fichier texte
+    }
 
     void affichagePierreTombale() {
+        /**
+         * Affiche la pierre tombale de la fin du mode histoire
+         * La pierre est stockée dans le dossier ressources au format .txt
+         */
         extensions.File f = newFile(PIERRE_PATH);
         while(ready(f)) {
             println(readLine(f));
         }
     }
 
-    void affichageText(String txt, int delai) {
-        for(int indice = 0; indice < length(txt); indice++) {
-            print(charAt(txt, indice));
-            delay(50);
-        }
-        delay(delai);
-        println("");
-    } // Affichage personnalisé du texte avec délai en paramètre
-
     void affichageText(String txt) {
+        /**
+         * Affiche le texte mit en paramètre avec un temps d'attente par défaut de 1000 ms à la fin de l'affichage et avec un retour à la ligne
+         * 
+         * Fonction d'affichage principale du jeu, elle ajoute un délai de 50 ms entre l'affichage de chaque caractère, permettant un effet de machine à écrire
+         * 
+         * @param txt : Texte à afficher
+         */
         for(int indice = 0; indice < length(txt); indice++) {
             print(charAt(txt, indice));
             delay(50);
         }
         delay(1000);
         println("");
-    } // Affichage personnalisé de texte
+    }
+
+    void affichageText(String txt, int delai) {
+        /**
+         * Affiche le texte mit en paramètre avec un délai à la fin de l'affichage et avec un retour à la ligne
+         * 
+         * Il s'agit d'une surcharge de la fonction afficherText(String)
+         * 
+         * @param txt : Texte à afficher
+         * @param delai : Délai à la fin de l'affichage
+         * @see affichageText(String)
+         */
+        for(int indice = 0; indice < length(txt); indice++) {
+            print(charAt(txt, indice));
+            delay(50);
+        }
+        delay(delai);
+        println("");
+    }
 
     void affichageText(String txt, int delai, boolean retourALaLigne) {
+        /**
+         * Affiche le texte mit en paramètre avec un délai à la fin de l'affichage définit en paramètre et avec la possibilité de choisir un retour à la ligne ou non
+         * 
+         * Il s'agit d'une surcharge de la fonction afficherText(String)
+         * 
+         * @param txt : Texte à afficher
+         * @param delai : Délai à la fin de l'affichage
+         * @param retourALaLigne : Définit s'il y aura un retour à la ligne à la fin de l'affichage
+         * @see affichageText(String)
+         */
         for(int indice = 0; indice < length(txt); indice++) {
             print(charAt(txt, indice));
             delay(50);
@@ -92,13 +143,22 @@ class Main extends Program {
         if(retourALaLigne) {
             println("");
         }
-    } // Affichage personnalisé de texte
+    }
 
     void affichageDialogue(String txt) {
+        /**
+         * Fonction propre au mode histoire, elle permet l'affichage du texte avec une mise en page personnalisée de certains éléments
+         * 
+         * Les chaînes commençant par un '–' seront affichées en grise et en italique
+         * Chaque itération de "Fey la fée" à n'importe quel endroit du texte sera affiché en violet
+         * Chaque itération de "[user]" à n'importe quel endroit du texte sera remplacé par le nom du joueur et affiché en vert
+         * 
+         * Cette fonction reprend les principes de la fonction affichageText(String)
+         * 
+         * @param txt : Texte à afficher
+         */
         int indice = 0;
         while(indice < length(txt)) {
-            // Vérification si le texte correspond à une mise en page spéciale 
-
             if(indice < length(txt) - 10 && equals(substring(txt, indice, indice + 10), "Fey la fée")) {
                 affichageText(FEY_LA_FEE, 0, false);
                 indice = indice + 10;
@@ -121,23 +181,54 @@ class Main extends Program {
     }
 
     void affichageInput(Question q, int nbQuestion) {
+        /**
+         * Affichage d'une question de type Input
+         * 
+         * L'affichage comprendra le numéro de la question ainsi que l'intitulé de la question
+         * Cette fonction est dédiée au mode Entraînement
+         * 
+         * @param q : Question à afficher
+         * @param nbQuestion : Numéro de la question
+         */
         affichageText("Question " + nbQuestion + " : " + q.question);
         print("Votre réponse : ");
-    } // Méthode affichant les questions de type INPUT
+    }
 
     void affichageInput(Question q) {
+        /**
+         * Affichage d'une question de type Input
+         * 
+         * L'affichage comprendra uniquement l'intitulé de la question et sera affiché au format dialogue
+         * Cette fonction est dédiée au mode Histoire
+         * 
+         * @param q : Question à afficher
+         */
         affichageDialogue(q.question);
         print("Votre réponse : ");
-    } // Méthode affichant les questions de type INPUT
+    }
 
     void affichageQCM(Question q, int nbQuestion) {
+        /**
+         * Affichage d'une question de type QCM
+         * 
+         * L'affichage comprendra le numéro de la question, son intitulé ainsi que les 4 choix possibles de réponse
+         * 
+         * @param q : Question à afficher
+         * @ param nbQuestion : Numéro de la question
+         */
         affichageText("Question " + nbQuestion + " : " + q.question + "\n1. " + q.choix1 + "\n2. " + q.choix2 + "\n3. " + q.choix3 + "\n4. " + q.choix4);
         print("Votre réponse : ");
-    } // méthode affichant les questions de type QCM (avec affichage des possibilités)
+    }
     
     // Sauvegarde des fichiers CSV ---------------------------------------------------------------------------------------
 
     void savePlayerCSV() {
+        /**
+         * Transforme le tableau de Player playerList en un tableau 2D de String puis sauvegarde dans le fichier CSV players.csv
+         * Le fichier players.csv se situe dans le dossier files
+         * 
+         * @see saveCSV
+         */
         String[][] players = new String[length(playerList)][4];
         for(int indice = 0; indice < length(players); indice++) {
             String[] player = new String[4];
@@ -150,9 +241,14 @@ class Main extends Program {
         }
         saveCSV(players, PLAYERS_PATH);
         affichageText("[SAVE] Sauvegarde terminée !", 0);
-    } // Sauvegarde dans le fichier players.csv de la liste des joueurs
+    }
 
     void addAndSavePlayer(Player p) {
+        /**
+         * Ajoute le joueur au tableau de Player global et lance une sauvegarde de ce dernier
+         * 
+         * @param p : Joueur à ajouter
+         */
         Player[] newList = new Player[length(playerList) + 1];
         for(int indice = 0; indice < length(playerList); indice++) {
             newList[indice] = playerList[indice];
@@ -160,22 +256,53 @@ class Main extends Program {
         newList[length(playerList)] = p;
         playerList = newList;
         savePlayerCSV();
-    } // Ajoute un joueur dans la liste de player
+    }
 
-    // Fonctions diverses
+    // Fonctions diverses ---------------------------------------------------------------------------------------
 
-    boolean isYes(String txt) { return equals(txt, "o"); } // Fonction renvoyant la validation d'une question
+    boolean isYes(String txt) {
+        /**
+         * Fonction vérifiant si le texte correspond à la chaîne "o"
+         * 
+         * Cette fonction est utilisée pour demander une validation à l'utilisateur. On la retrouve notamment dans la demande de création de compte au menu ce connexion
+         * 
+         * @param txt : Texte saisi par l'utilisateur
+         * @return Egalité du texte à la chaîne "o"
+         */
+        return equals(txt, "o"); 
+    }
 
     Player newPlayer(String nom, String mdp) {
+        /**
+         * Renvoie un nouveau joueur de type Player avec le username et le mot de passe correspondant aux paramètres
+         * 
+         * Fonction créant un nouveau joueur, utilisé à la création de compte.
+         * Les valeurs de progression sont initalisées à 0
+         * 
+         * @param nom : Nom d'utilisateur du joueur
+         * @param mdp : Mot de passe crypté du joueur
+         * @return Nouveau joueur
+         */
         Player p = new Player();
         p.username = nom;
         p.trainingCompleted = 0;
         p.storyCompleted = 0;
         p.mdp = mdp;
         return p;
-    } // Fonction renvoyant un nouveau joueur initialisé
+    }
 
     boolean contains(String txt, char carac) {
+        /**
+         * Vérifie si la chaîne de caractère contient le caractère mit en paramètre
+         * 
+         * Cette fonction peut être utilisée dans de nombreux contextes.
+         * Dans le jeu, elle est utilisée dans le contrôle de saisie d'un nombre entier
+         * 
+         * @param txt : Texte de référence
+         * @param carac : Caractère recherché
+         * @return Présence du caractère dans le texte
+         * @see saisieNombreEntier(int) pour un exemple d'utilisation
+         */
         boolean found = false;
         int indice = 0;
         while(indice < length(txt) && !found) {
@@ -183,38 +310,73 @@ class Main extends Program {
             indice++;
         }
         return found;
-    } // Fonction renvoyant la présence d'un caractère dans une chaîne
+    }
 
     boolean playerExists(String name) {
+        /**
+         * Vérifie l'existance d'un joueur à partir de son username
+         * 
+         * Permet d'éviter la création d'un nouveau joueur avec un nom d'utilisateur déjà existant
+         * 
+         * @param name : Nom d'utilisateur recherché
+         * @return Existance du joueur dans la base players.csv
+         */
         for(int indice = 0; indice < length(playerList); indice++) {
             if(equals(playerList[indice].username, name)) {
                 return true;
             }
         }
         return false;
-    } // Cette fonction renvoie true si le joueur de nom existe, false sinon
+    }
 
     Player getPlayerByName(String name) {
+        /**
+         * Renvoie le type player correspondant au joueur de nom name
+         * 
+         * Cette fonction est notamment utilisée dans la connexion à un joueur déjà existant
+         * 
+         * @param name : Username de l'utilisateur
+         * @return Player correspondant au Username
+         * @see connectionMenu() pour un exemple d'utilisation
+         */
         for(int indice = 0; indice < length(playerList); indice++) {
             if(equals(playerList[indice].username, name)) {
                 return playerList[indice];
             }
         }
         return null;
-    } // Cette fonction renvoie le player correspondant au nom, null si aucun player ne correspond
+    }
 
     int getPlayerIDByName(String name) {
+        /**
+         * Renvoie la position du player dans le tableau playerList
+         * 
+         * Si l'utilisateur n'est pas trouvé, la fonction renvoie -1
+         * 
+         * @param name : Username de l'utilisateur
+         * @return Position de l'utilisateur
+         * @see deleteAccount() pour un exemple d'utilisation
+         */
         for(int indice = 0; indice < length(playerList); indice++) {
             if(equals(playerList[indice].username, name)) {
                 return indice;
             }
         }
         return -1;
-    } // Cette fonction renvoie la position du player correspondant au nom dans la liste des joueurs, -1 si aucun player ne correspond
+    }
 
     // Gestion mots de passe ---------------------------------------------------------------------------------------
 
     String cryptage(String txt, char key) {
+        /**
+         * Crypte le texte en fonction de la clé fournit en paramètre
+         * 
+         * Utilisation prévue pour le cryptage des mots de passe
+         * 
+         * @param txt : Texte à encrypter
+         * @param key : Clé de cryptage
+         * @return Texte crypté
+         */
         String mdp = "";
         String username = actualPlayer.username;
         for(int indice = 0; indice < length(txt); indice++) {
@@ -224,6 +386,14 @@ class Main extends Program {
     }
 
     String newMDP() {
+        /**
+         * Gestion de la création d'un nouveau mot de passe
+         * 
+         * Contrôle la saisie de l'utilisateur du mot de passe qu'il souhaite définir et de sa confirmation.
+         * Fonction récursive s'appelant tant que les deux mots de passe ne correspondent pas
+         * 
+         * @return Nouveau mot de passe crypté
+         */
         print("Entrez un nouveau mot de passe : ");
         String saisie = saisieReponse();
         print("Confirmez votre mot de passe : ");
@@ -240,6 +410,15 @@ class Main extends Program {
     }
 
     boolean checkMDP() {
+        /**
+         * Gestion de la vérification du mot de passe
+         * 
+         * Contrôle si le mot de passe entré par l'utilisateur correspond au mot de passe du joueur
+         * L'utilisateur peut entrer "retour" pour revenir en arrière. La fonction renverra false
+         * Si l'utilisateur rentre correctement son mot de passe, la fonction renverra true
+         * 
+         * @return Saisie valide du mot de passe
+         */
         print("Saisissez votre mot de passe (retour pour quitter) : ");
         String saisie = cryptage(saisieReponse(), '¤');
         if(equals(cryptage("retour", '¤'), saisie)) {
@@ -255,6 +434,14 @@ class Main extends Program {
     // Menu connexion ---------------------------------------------------------------------------------------
 
     void connectionMenu() {
+        /**
+         * Affichage du menu de connexion et de création de joueur
+         * 
+         * Gestion de l'entrée du nom d'utilisateur, avec vérification de l'existance d'un joueur de ce nom ou non
+         * Vérification de la validité du mot de passe, création d'un nouveau mot de passe si aucun n'est définit
+         * Création d'un joueur si aucun n'existe sous le nom entré par l'utilisateur
+         * Cette fonction effectue également une série de vérification pour éviter la triche et les bugs de niveaux trop élevés
+         */
         boolean valide = false;
         affichageDrapeau();
         affichageText(ANSI_RED + "Bienvenue sur DoubleLangue !" + ANSI_RESET + "\nPour commencer, merci d'entrer votre nom d'utilisateur.\n" + ANSI_BLUE + "Votre progression sera sauvegardée par le biais de ce nom." + ANSI_RESET);
@@ -311,11 +498,19 @@ class Main extends Program {
         }
         savePlayerCSV();
         mainMenu();
-    } // Cette fonction affichera le menu de connexion. Elle fera appel à la fonction saisieConnection, playerExists et getPlayerByName. Elle initialisera également la valeur actualPlayer 
+    }
     
     // Menu principal ---------------------------------------------------------------------------------------
 
     void mainMenu() {
+        /**
+         * Menu principal affichant tous les modes de jeux et les sous-menus pouvant être accessibles
+         * 
+         * L'utilisateur aura le choix entre :
+         * - Voir les règles
+         * - Jouer (mode Histoire ou Entraînement)
+         * - Modifier les paramètres du compte
+         */
         affichageDrapeau();
         affichageText("Bienvenue " + ANSI_GREEN + actualPlayer.username + ANSI_RESET + "!", 0);
         affichageText("Choisissez votre mode de jeu :\n0. Déconnexion\n1. Mode histoire (Progression : " + (actualPlayer.storyCompleted * 100 / length(dialogues)) + " %)\n2. Mode entraînement (Progression : " + (actualPlayer.trainingCompleted * 100 / length(trainingLevels)) + " %)\n3. Règles du jeu\n4. Paramètres", 0);
@@ -336,9 +531,13 @@ class Main extends Program {
             case 4:
                 settings();
         }
-    } // Menu de sélection du mode de jeu
+    }
 
     void rules() {
+        /**
+         * Affichage des règles de base du jeu
+         * Cette fonction ne fait qu'une série d'affichage
+         */
         clearScreen();
         affichageText(ANSI_BOLD + "Bienvenue sur " + ANSI_GREEN + "DoubleLangue !" + ANSI_RESET);
         affichageText("Les règles du jeu sont très simple ! Une question vous sera posée. Elle peut être de type QCM ou d'entrée.", 0);
@@ -355,6 +554,17 @@ class Main extends Program {
     // Gestion des saisies ---------------------------------------------------------------------------------------
 
     int saisieNombreEntier(int maxOption) {
+        /**
+         * Contrôle la saisie d'un nombre entier par l'utilisateur entre 0 et le nombre maximum définit en paramètre
+         * 
+         * La saisie ne peut pas être plus grande que 1 chiffre (le maximum doit donc être inférieur ou égal à 9)
+         * Le chiffre maximum en paramètre est inclus dans la vérification et peut être entré par l'utilisateur
+         * La fonction peut être utilisée dans les menus par exemple
+         * 
+         * @param maxOption : Chiffre maximum pouvant être entré par l'utilisateur
+         * @return Entier entré par l'utilisateur
+         * @see mainMenu() pour un exemple d'utilisation
+         */
         boolean valide = false;
         String saisie = "";
         while(!valide) {
@@ -366,11 +576,20 @@ class Main extends Program {
             }
         }
         return stringToInt(saisie);
-    } // Contrôle la saisie d'un nombre entier
+    }
 
     boolean isGoodInputAnswer(Question q, String a) {
+        /**
+         * Vérifie si la réponse du joueur correspond à la réponse attendue de la question INPUT
+         * 
+         * Cette fonction supprime les espaces, caractères spéciaux et la casse évitant les problèmes liés
+         *  
+         * @param q : Question correspondante
+         * @param a : Réponse de l'utilisateur
+         * @return Correspondance de la réponse à la question et de celle entrée par l'utilisateur
+         */
         a = toUpperCase(a); // Transformation de la réponse en une réponse évitant les problèmes de casse et de ponctuation
-        q.answerInput = toUpperCase(q.answerInput); // Même opération pour les questions stockées dans l'optique d'une nouvelle fonctionnalité de questions personnalisées (et facilitant la lecture en bdd)
+        String bonneReponse = toUpperCase(q.answerInput); // Même opération pour les questions stockées dans l'optique d'une nouvelle fonctionnalité de questions personnalisées (et facilitant la lecture en bdd)
         String res = "";
         for(int indice = 0; indice < length(a); indice++) {
             char carac = charAt(a, indice);
@@ -379,8 +598,8 @@ class Main extends Program {
             }
         }
         String ans = "";
-        for(int indice = 0; indice < length(q.answerInput); indice++) {
-            char carac = charAt(q.answerInput, indice);
+        for(int indice = 0; indice < length(bonneReponse); indice++) {
+            char carac = charAt(bonneReponse, indice);
             if (carac >= 'A' && carac <= 'Z') {
                 ans += carac;
             }
@@ -389,19 +608,42 @@ class Main extends Program {
             return true;
         }
         return false;
-    } // Vérification de la validité ou non d'une réponse au INPUT
+    }
 
     boolean isGoodQCMAnswer(Question q, int a) {
+        /**
+         * Vérifie si la réponse du joueur correspond à la réponse attendue de la question QCM
+         * 
+         * Cette fonciton ajoute 1 à la réponse, prenant en compte le décalage d'indice
+         * 
+         * @param q : Question correspondante
+         * @param a : Réponse de l'utlisateur
+         * @return Correspodance de la réponse à la question et de celle entrée par l'utilisateur
+         */
         return q.answerQCM + 1 == a;
-    } // Vérification de la validité ou non d'une réponse au QCM
+    }
 
     String saisieReponse() {
+        /**
+         * Récupère et renvoie l'entrée d'un utilisateur
+         * 
+         * Aucune vérification n'est effectuée par la fonction
+         * 
+         * @return Entrée utilisateur
+         */
         return readString();
-    } // Fonction renvoyant l'entrée utilisateur
+    } 
 
     // Mode entraînement ---------------------------------------------------------------------------------------
 
     void trainingModeSelection() {
+        /**
+         * Affichage des différentes possibilités d'entraînement en fonction de l'avancée du joueur
+         * 
+         * Si le joueur joue pour la première fois au mode de jeu (ou n'a toujours pas terminé le 1er niveau), le niveau 1 se lance automatiquement
+         * Si le joueur a fini tous les niveaux du module d'entraînement, la possibilité de jouer le niveau suivant est caché
+         * Sinon, le joueur peut soit revenir en arrière, soit rejouer un niveau, soit joueur le niveau suivant
+         */
         if(actualPlayer.trainingCompleted == 0) {
             affichageText("Bienvenue dans le module d'entraînement.", 0);
             affichageText("Ici, vous trouverez des niveaux pour vous entraîner au mode histoire.", 0);
@@ -417,7 +659,7 @@ class Main extends Program {
                 affichageText("0. Retour\n1. Rejouer un niveau\n2. Continuer vers le niveau " + (actualPlayer.trainingCompleted + 1), 0);
                 max = 2;
             }
-            affichageText("Entrez un nombre : ", 0, false);
+            affichageText("Entrez votre sélection : ", 0, false);
             int saisie = saisieNombreEntier(2);
             switch(saisie) {
                 case 0:
@@ -437,9 +679,18 @@ class Main extends Program {
                     trainingModeSelection();
             }
         }
-    } // Fonction affichant le choix du niveau à jouer
+    }
 
     void trainingSelection(int page) { 
+        /**
+         * Affichage de l'ensemble des niveaux terminés par l'utilisateur, permettant de le rejouer
+         * 
+         * Pour palier à la possibilité qu'il y ait plus de 8 niveaux, un système de page est mit en place
+         * Les niveaux affichés seront les niveaux correspondant à 8 fois la page
+         * L'utilisateur pourra ensuite sélectionner le niveau qu'il souhaite rejouer et voyager entre les pages
+         * 
+         * @param page : Numéro de la page
+         */
         String choices;
         affichageText("======= Page ("+ (page + 1) + "/" + (length(trainingLevels) / 8 + 1) + ") =======", 0);
         if (page == 0) {choices = "0. Retour\n";}
@@ -475,10 +726,17 @@ class Main extends Program {
             default:
                 playTraining(saisie + 8 * page);
         }
-    } // Fonction affichant la sélection du niveau d'entraînement déjà terminé
+    }
 
     int play(Question[] niveau, int tentatives) {
-
+        /**
+         * Gestion de la saisie des réponses de l'utilisateur, du nombre de tentatives du joueur et de l'affichage des questions
+         * 
+         * La fonction revoie le nombre de tentatives restantes, permettant l'action en conséquence, et fonctionne tant qu'il reste des tentatives à l'utilisateur et qu'il n'a pas terminé l'ensemble des questions
+         * Principalement utilisée dans le mode Entraînement
+         * 
+         * @param niveau : Liste des questions à jouer
+         */
         int question = 0;
 
         while (question < length(niveau) && tentatives > 0) {
@@ -505,6 +763,12 @@ class Main extends Program {
     }
 
     void playTraining(int level) { 
+        /**
+         * Lance le niveau d'entraînement et vérifie la victoire ou non du joueur
+         * Les valeurs de progression du joueur dans le mode sont modifiées ici
+         * 
+         * @param level : Indice du niveau à jouer correspondant à la position dans trainingLevels
+         */
         Question[] niveau = new Question[length(trainingLevels, 2)];
         int tentatives = 5;
 
@@ -531,11 +795,21 @@ class Main extends Program {
             affichageText("Dommage... Vous n'avez pas terminé ce niveau. Vous pouvez toujours réessayer");
             mainMenu();
         }
-    } // Fonction jouant les questions d'un niveau
+    }
 
     // Mode Histoire ---------------------------------------------------------------------------------------
 
     boolean playQuestion(Question q, int tentatives) {
+        /**
+         * Joue la question en paramètre avec un affichage type dialogue
+         * 
+         * Les messages de mauvaises réponses sont propres au mode histoire
+         * Le nombre de tentatives est unique à chaque question dans ce mode
+         * 
+         * @param q : Question correspondante
+         * @param tentatives : Nombre de tentatives pour le niveau
+         * @return Réussite du niveau
+         */
         String[] messages = new String[]{FEY_LA_FEE + " : \"C'est bien ce que je pensais, tu n'es pas à la hauteur... Reviens quand tu seras prêt.\"", FEY_LA_FEE + " : \"Attention, si tu ne réponds pas correctement, je ne vais pas pouvoir te laisser continuer\"", FEY_LA_FEE + " : \"Oh oh, on dirait que ce n’est pas la bonne réponse, réessaie !\""};
         affichageInput(q);
         while(tentatives > 0) {
@@ -549,6 +823,17 @@ class Main extends Program {
     }
 
     void playStory(int completion, int tentatives) {
+        /**
+         * Gestion de l'affichage des dialogues du mode histoire, des lancements des questions et de la sauvegarde de l'avancée du joueur
+         * 
+         * Les dialogues sont stockés sous forme de tableau de chaîne de caractère, divisé en section.
+         * Les sections sont marquées par les ... dans le fichier dialogue.txt
+         * Certaines sections sont plus ou moins grandes que les autres, ainsi, certaines cases null peuvent exister à la fin des lignes.
+         * Pour palier à ce problème, une vérification de l'existance de la chaine est effectuée à chaque itération
+         * 
+         * @param completion : Avancée du joueur et section à jouer
+         * @param tentatives : Nombre de tentatives du joueur pour chaque question
+         */
         String[] dialogue = dialogues[completion];
         int indice = 0;
         boolean success = true;
@@ -576,6 +861,12 @@ class Main extends Program {
     }
 
     void endOfTurn() {
+        /**
+         * Fonction jouée à la fin de chaque tour du mode Histoire, elle propose au joueur de faire une pause sur l'aventure
+         * Si le joueur a atteint la fin de l'histoire, la fonction affichera une pierre tombale, puis des retour à la ligne toutes les 200 ms pour faire dispataître petit à petit la pierre tombale
+         * 
+         * @see affichagePierre()
+         */
         if(actualPlayer.storyCompleted == 4) {
             affichagePierreTombale();
             delay(3000);
@@ -595,6 +886,14 @@ class Main extends Program {
     }
 
     void story(int level) {
+        /**
+         * Vérification de la progression du joueur et lancement du mode histoire
+         * 
+         * Si le joueur atteint la fin du jeu (level correspond au nombre de sections total), la fonction proposera de recommencer l'histoire en supprimant la progression.
+         * Sinon, la fonction lancera le niveau correspondant
+         * 
+         * @param level : Avancée du joueur et niveau à lancer
+         */
         if (length(dialogues) == level) {
             affichageText("Vous avez terminé le mode histoire ! Félicitations ! Souhaitez-vous recommencer ? Attention ! Votre progression sera écrasée ! (o/n)", 0, false);
             if(isYes(saisieReponse())) {
@@ -614,6 +913,15 @@ class Main extends Program {
     // Paramètrage ---------------------------------------------------------------------------------------
 
     void settings() {
+        /**
+         * Menu affichant les différents paramètres existants et redirigeant vers les menus associés
+         * 
+         * Liste des paramètres :
+         * - Modifier le pseudo
+         * - Nouveau mot de passe
+         * - Réinitialisation de la progression
+         * - Suppression du compte
+         */
         affichageText("Choisissez un paramètre :\n0. Retour\n1. Modifier votre pseudo\n2. Réinitialiser le profil\n3. Définir un nouveau mot de passe\n4. Supprimer votre compte", 0);
         affichageText("Saisissez votre choix : ", 0, false);
         int entree = saisieNombreEntier(4);
@@ -628,8 +936,10 @@ class Main extends Program {
                 doubleCheckReset();
                 return;
             case 3:
-                actualPlayer.mdp = newMDP();
-                affichageText("Mot de passe modifié.");
+                if(checkMDP()) {
+                    actualPlayer.mdp = newMDP();
+                    affichageText("Mot de passe modifié.");
+                }
                 settings();
                 return;
             case 4:
@@ -638,6 +948,11 @@ class Main extends Program {
     }
 
     void deleteAccount() {
+        /**
+         * ! Dangerous Zone !
+         * Fonction de suppression du joueur de la base de données
+         * Cette fonction effectue 2 vérifications supplémentaires sur la volonté de l'utilisateur de supprimer son compte et demande le mot de passe
+         */
         affichageText(ANSI_BOLD + ANSI_RED + "Attention ! Cette action est irréversible ! Êtes vous sûrs de vouloir supprimer votre compte ? (o/n) " + ANSI_RESET, 0, false);
         if(isYes(saisieReponse())) {
             affichageText("Dernière chance de revenir en arrière ! Voulez-vous vraiment supprimer votre compte ? (o/n) ", 0, false);
@@ -669,6 +984,10 @@ class Main extends Program {
     }
 
     void editUsername() {
+        /**
+         * Modification du nom d'utilisateur du joueur
+         * La fonction vérifie si le nom d'utilisateur n'est pas déjà utilisé
+         */
         affichageText("Entrez votre nouveau nom d'utilisateur (entrez annuler pour revenir en arrière) : ", 0, false);
         String newUsername = toUpperCase(saisieReponse());
         if (equals(newUsername, "annuler")) {
@@ -690,6 +1009,11 @@ class Main extends Program {
     }
 
     void doubleCheckReset() {
+        /**
+         * ! Dangerous Zone !
+         * Fonction de réinitialisation de la progression du joueur
+         * Cette fonction effectue 2 vérifications supplémentaires sur la volonté de l'utilisateur de supprimer sa progression et demande le mot de passe
+         */
         affichageText("Êtes-vous sur de vouloir réinitialiser votre profil ? Cette action est irréversible. (o/n)", 0, false);
         if(isYes(saisieReponse())) {
             affichageText("Dernière chance d'annuler la réinitialisation. Souhaitez-vous vraiment tout supprimer ? (o/n)", 0, false);
@@ -707,6 +1031,13 @@ class Main extends Program {
     // Initialisation du jeu ---------------------------------------------------------------------------------------
 
     void initQuestion() {
+        /**
+         * Initialisation des questions du fichier questions.csv dans les variables globales
+         * 
+         * Le fichier se situe dans le dossier files
+         * Un log est effectué vérifiant le bon déroulé de l'itinialisation ainsi que le nombre de questions chargées.
+         * En cas d'erreur, le jeu ne se lancera pas et un message d'erreur s'affichera, invitant l'utilisateur à contacter l'équipe de dev
+         */
         // Log
         print("[LOAD] Questions");
 
@@ -750,9 +1081,16 @@ class Main extends Program {
             loadedSuccessfully = false;
             println("\t" + ANSI_RED + "ERREUR " + ANSI_RESET + "Initialisation des questions interrompue : " + e);
         }
-    } // Initialisation et conversion des questions
+    }
 
     void initTrainingLevels() {
+        /**
+         * Initialisation des niveaux du fichier training.csv dans les variables globales correspondantes
+         * 
+         * Le fichier se situe dans le dossier files
+         * Un log est effectué vérifiant le bon déroulé de l'itinialisation ainsi que le nombre de niveaux chargés.
+         * En cas d'erreur, le jeu ne se lancera pas et un message d'erreur s'affichera, invitant l'utilisateur à contacter l'équipe de dev
+         */
         print("[LOAD] Training  ");
         try {
             CSVFile f = loadCSV(TRAINING_LEVELS_PATH);
@@ -768,9 +1106,16 @@ class Main extends Program {
             loadedSuccessfully = false;
             println("\t" + ANSI_RED + "ERREUR " + ANSI_RESET + "Initialisation des niveaux entraînement interrompue : " + e);
         }
-    } // Cette fonction initialisera les variables trainingLevels à partir du fichier CSV correspondant
+    }
 
     void initPlayer() {
+        /**
+         * Initialisation des joueurs du fichier players.csv dans les variables globales correspondantes
+         * 
+         * Le fichier se situe dans le dossier files
+         * Un log est effectué vérifiant le bon déroulé de l'itinialisation ainsi que le nombre de joueurs chargés.
+         * En cas d'erreur, le jeu ne se lancera pas et un message d'erreur s'affichera, invitant l'utilisateur à contacter l'équipe de dev
+         */
         print("[LOAD] Données joueurs");
         try {
             CSVFile f = loadCSV(PLAYERS_PATH);
@@ -794,9 +1139,16 @@ class Main extends Program {
             loadedSuccessfully = false;
             println("\t" + ANSI_RED + "ERREUR " + ANSI_RESET + "Initialisation des joueurs interrompue : " + e);
         }
-    } // Cette fonction initialisera la variable playerList à partir du fichier CSV correspondant
+    }
 
     void initDialogues() {
+        /**
+         * Initialisation des dialogues du fichier dialogues.txt dans les variables globales correspondantes
+         * 
+         * Le fichier se situe dans le dossier files
+         * Un log est effectué vérifiant le bon déroulé de l'itinialisation ainsi que le nombre de dialogues chargés.
+         * En cas d'erreur, le jeu ne se lancera pas et un message d'erreur s'affichera, invitant l'utilisateur à contacter l'équipe de dev
+         */
         print("[LOAD] Dialogues   ");
         try {
             File f = newFile(DIALOGUES_PATH);
@@ -832,9 +1184,14 @@ class Main extends Program {
             loadedSuccessfully = false;
             println("\t" + ANSI_RED + "ERREUR " + ANSI_RESET + "Initialisation des dialogues interrompue : " + e);
         }
-    } // Cette fonction initialise les dialogues pour le mode histoire
+    }
 
     void algorithm() {
+        /**
+         * Lancement de toutes les initialisations
+         * Si une initialisation ne se déroule pas comme prévu, un message d'erreur est affiché.
+         * Sinon, le jeu se lance correctement
+         */
         affichageText("Lancement du jeu en cours . . .", 2000);
         // Initialisation des fichiers CSV
         initQuestion();
