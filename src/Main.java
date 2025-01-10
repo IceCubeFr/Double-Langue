@@ -315,6 +315,15 @@ class Main extends Program {
         return null;
     } // Cette fonction renvoie le player correspondant au nom, null si aucun player ne correspond
 
+    int getPlayerIDByName(String name) {
+        for(int indice = 0; indice < length(playerList); indice++) {
+            if(equals(playerList[indice].username, name)) {
+                return indice;
+            }
+        }
+        return -1;
+    } // Cette fonction renvoie la position du player correspondant au nom dans la liste des joueurs, -1 si aucun player ne correspond
+
     // Menus et fonctions principales
 
     String cryptage(String txt, char key) {
@@ -342,6 +351,19 @@ class Main extends Program {
         }
     }
 
+    boolean checkMDP() {
+        print("Saisissez votre mot de passe (retour pour quitter) : ");
+        String saisie = cryptage(saisieReponse(), '¤');
+        if(equals(cryptage("retour", '¤'), saisie)) {
+            return false;
+        }
+        if(equals(saisie, actualPlayer.mdp)) {
+            return true;
+        }
+        println(ANSI_RED + "Mot de passe incorrect" + ANSI_RESET);
+        return checkMDP();
+    }
+
     void connectionMenu() {
         boolean valide = false;
         affichageDrapeau();
@@ -367,11 +389,7 @@ class Main extends Program {
                     actualPlayer.mdp = newMDP();
                     valide = true;
                 } else {
-                    affichageText("Entrez votre mot de passe : ", 0, false);
-                    String saisie = saisieReponse();
-                    if (!equals(cryptage(saisie, '¤'), actualPlayer.mdp)) {
-                        affichageText(ANSI_RED + "Mot de passe incorrect." + ANSI_RESET);
-                    } else {
+                    if(checkMDP()) {
                         valide = true;
                     }
                 }
@@ -693,9 +711,9 @@ class Main extends Program {
     }
 
     void settings() {
-        affichageText("Choisissez un paramètre :\n0. Retour\n1. Modifier votre pseudo\n2. Réinitialiser le profil\n3. Définir un nouveau mot de passe.", 0);
+        affichageText("Choisissez un paramètre :\n0. Retour\n1. Modifier votre pseudo\n2. Réinitialiser le profil\n3. Définir un nouveau mot de passe\n4. Supprimer votre compte", 0);
         affichageText("Saisissez votre choix : ", 0, false);
-        int entree = saisieNombreEntier(3);
+        int entree = saisieNombreEntier(4);
         switch(entree) {
             case 0:
                 mainMenu();
@@ -711,7 +729,40 @@ class Main extends Program {
                 affichageText("Mot de passe modifié.");
                 settings();
                 return;
+            case 4:
+                deleteAccount();
         }
+    }
+
+    void deleteAccount() {
+        affichageText(ANSI_BOLD + ANSI_RED + "Attention ! Cette action est irréversible ! Êtes vous sûrs de vouloir supprimer votre compte ? (o/n) " + ANSI_RESET, 0, false);
+        if(isYes(saisieReponse())) {
+            affichageText("Dernière chance de revenir en arrière ! Voulez-vous vraiment supprimer votre compte ? (o/n) ", 0, false);
+            if(isYes(saisieReponse())) {
+                if(checkMDP()) {
+                    affichageText(ANSI_RED + "Suppresion en cours du compte . . ." + ANSI_RESET, 2000);
+                    Player[] newPlayerList = new Player[length(playerList) - 1];
+                    int indiceNewList = 0;
+                    int indicePlayer = getPlayerIDByName(actualPlayer.username);
+                    for(int indice = 0; indice < length(playerList); indice++) {
+                        if(indice != indicePlayer) {
+                            newPlayerList[indiceNewList] = playerList[indice];
+                            indiceNewList++;
+                        }
+                    }
+                    playerList = new Player[length(newPlayerList)];
+                    for(int indice = 0; indice < length(playerList); indice++) {
+                        playerList[indice] = newPlayerList[indice];
+                    }
+                    savePlayerCSV();
+                    affichageText("Compte correctement supprimé. A très vite");
+                    connectionMenu();
+                    return;
+                }
+            }
+        }
+        settings();
+        return;
     }
 
     void editUsername() {
@@ -740,9 +791,11 @@ class Main extends Program {
         if(isYes(saisieReponse())) {
             affichageText("Dernière chance d'annuler la réinitialisation. Souhaitez-vous vraiment tout supprimer ? (o/n)", 0, false);
             if(isYes(saisieReponse())) {
-                actualPlayer = newPlayer(actualPlayer.username, actualPlayer.mdp)
-                savePlayerCSV();
-                affichageText("Progression réinitialisée.", 2000);
+                if(checkMDP()) {
+                    actualPlayer = newPlayer(actualPlayer.username, actualPlayer.mdp);
+                    savePlayerCSV();
+                    affichageText("Progression réinitialisée.", 2000);   
+                }
             }
         }
         settings();
