@@ -12,6 +12,8 @@ class Main extends Program {
     final String DRAPEAU_PATH = "./ressources/drapeau_en.txt";
     final String DIALOGUES_PATH = "./files/dialogues.txt";
     final String PIERRE_PATH = "./ressources/pierre.txt";
+    final String VICTORY_PATH = "./ressources/victory.txt";
+    final String DEFEAT_PATH = "./ressources/defeat.txt";
     final String FEY_LA_FEE = "" + ANSI_PURPLE + "Fey la fée" + ANSI_RESET;
     final String ANSI_GREY = "\u001b[90m";
 
@@ -221,6 +223,24 @@ class Main extends Program {
         affichageText("Question " + nbQuestion + " : " + q.question + "\n1. " + q.choix1 + "\n2. " + q.choix2 + "\n3. " + q.choix3 + "\n4. " + q.choix4);
         print("Votre réponse : ");
     }
+
+    void affichageVictory() {
+        File f = newFile(VICTORY_PATH);
+        while(ready(f)) {
+            println(readLine(f));
+        }
+        delay(3000);
+        clearScreen();
+    }
+
+    void affichageDefeat() {
+        File f = newFile(DEFEAT_PATH);
+        while(ready(f)) {
+            println(readLine(f));
+        }
+        delay(3000);
+        clearScreen();
+    }
     
     // Sauvegarde des fichiers CSV ---------------------------------------------------------------------------------------
 
@@ -294,6 +314,31 @@ class Main extends Program {
         newQuestionList[length(questionList)] = q;
         questionList = newQuestionList;
         saveQuestionCSV();
+    }
+
+    void saveCustomLevels() {
+        String[][] f;
+        if(length(customLevels) == 0) { return;}
+        else { f = new String[length(customLevels, 1)][length(customLevels, 2)];}
+        for(int ligne = 0; ligne < length(f, 1); ligne++) {
+            for(int col = 0; col < length(f, 2); col++) {
+                f[ligne][col] = "" + customLevels[ligne][col];
+            }
+        }
+        saveCSV(f, CUSTOM_LEVELS_PATH);
+        affichageText("[SAVE] Niveaux customs sauvegardés", 0);
+    }
+
+    void addCustomLevel(int[] level) {
+        int[][] newList;
+        if(length(customLevels) == 0) { newList = new int[1][length(level)];}
+        else { newList = new int[length(customLevels) + 1][length(customLevels, 2)];}
+        for(int lig = 0; lig < length(customLevels, 1); lig++) {
+            newList[lig] = customLevels[lig];
+        }
+        newList[length(customLevels)] = level;
+        customLevels = newList;
+        saveCustomLevels();
     }
 
     // Fonctions diverses ---------------------------------------------------------------------------------------
@@ -516,6 +561,8 @@ class Main extends Program {
                     System.exit(0);
                 } else if(equals(nom, "")) {
                     affichageText(ANSI_RED + "Le nom d'utilisateur ne peut pas être vide." + ANSI_RESET);
+                } else if(equals(nom, "SHREK")) {
+                    addCustomLevel(new int[]{1, 1, 1, 1, 1});
                 }
                 else {
                     affichageText("Aucun utilisateur trouvé.");
@@ -550,8 +597,8 @@ class Main extends Program {
          * - Modifier les paramètres du compte
          */
         affichageDrapeau();
-        affichageText("Bienvenue " + ANSI_GREEN + actualPlayer.username + ANSI_RESET + "!", 0);
-        affichageText("Choisissez votre mode de jeu :\n0. Déconnexion\n1. Mode histoire (Progression : " + (actualPlayer.storyCompleted * 100 / length(dialogues)) + " %)\n2. Mode entraînement (Progression : " + (actualPlayer.trainingCompleted * 100 / length(trainingLevels)) + " %)\n3. Règles du jeu\n4. Questions customs \n5. Paramètres", 0);
+        affichageText("======== Bienvenue " + ANSI_GREEN + actualPlayer.username + ANSI_RESET + " ========", 0);
+        affichageText("Choisissez votre mode de jeu :\n0. Déconnexion\n1. Mode histoire (Progression : " + (actualPlayer.storyCompleted * 100 / length(dialogues)) + " %)\n2. Mode entraînement (Progression : " + (actualPlayer.trainingCompleted * 100 / length(trainingLevels)) + " %)\n3. Questions et niveaux personnalisés\n4. Règles du jeu \n5. Paramètres", 0);
         affichageText("Entrez votre choix : ", 0, false);
         int option = saisieNombreEntier(5);
         switch (option) {
@@ -568,10 +615,10 @@ class Main extends Program {
                 trainingModeSelection();
                 return;
             case 3:
-                rules();
+                customModes();
                 return;
             case 4:
-                selectionType();
+                rules();
                 return;
             case 5:
                 settings();
@@ -594,6 +641,41 @@ class Main extends Program {
         affichageText("Appuyez sur " + ANSI_ITALIC + "entrée" + ANSI_RESET + " pour continuer", 0, false);
         readString();
         mainMenu();
+    }
+
+    void createCustoms() {
+        affichageText("Que souhaitez-vous créer ?\n0. Rien\n1. Nouvelle question\n2. Nouveau niveau", 0);
+        affichageText("Sélection : ", 0, false);
+        int saisie = saisieNombreEntier(2);
+        switch(saisie) {
+            case 0:
+                mainMenu();
+                break;
+            case 1:
+                selectionType();
+                break;
+            case 2:
+                creationLevel();
+                break;
+        }
+    }
+
+    void customModes() {
+        clearScreen();
+        affichageText(ANSI_GREEN + "========= Niveaux personnalisés =========" + ANSI_RESET, 0);
+        affichageText("Sélectionnez le mode :\n0. Retour\n1. Jouer aux niveaux perso\n2. Mode création\nSélection : ", 0, false);
+        int saisie = saisieNombreEntier(2);
+        switch(saisie) {
+            case 0:
+                mainMenu();
+                break;
+            case 1:
+                selectionCustomLevel(0);
+                break;
+            case 2:
+                createCustoms();
+                break;
+        }
     }
 
     // Gestion des saisies ---------------------------------------------------------------------------------------
@@ -801,7 +883,7 @@ class Main extends Program {
         }
 
         if (limite == 8) {
-            choices += "9. Page suivante";
+            choices += "9. Page suivante\n";
             limite++;
         }
         choices += "==========================";
@@ -877,6 +959,7 @@ class Main extends Program {
 
         // Vérification de la victoire ou de la défaite du joueur
         if (tentatives > 0) {
+            affichageVictory();
             if (actualPlayer.trainingCompleted == level) { // Affichage si c'est la première fois que le niveau est gégné
                 actualPlayer.trainingCompleted++;
                 affichageText("Congrats ! Vous avez complètement terminé ce niveau ! Vous pouvez désormais jouer au niveau " + (actualPlayer.trainingCompleted + 1));
@@ -887,8 +970,69 @@ class Main extends Program {
             savePlayerCSV();
             trainingModeSelection();
         } else {
+            affichageDefeat();
             affichageText("Dommage... Vous n'avez pas terminé ce niveau. Vous pouvez toujours réessayer");
             mainMenu();
+        }
+    }
+
+    // Jouer niveaux customs
+
+    void playCustom(int[] questions, int tentatives) {
+        Question[] niveau = new Question[length(questions)];
+        for(int indice = 0; indice < length(questions); indice++) {
+            niveau[indice] = questionList[questions[indice]];
+        }
+        tentatives = play(niveau, tentatives);
+        if(tentatives > 0) {
+            affichageVictory();
+            selectionCustomLevel(0);
+        } else {
+            affichageDefeat();
+            selectionCustomLevel(0);
+        }
+    }
+
+    void selectionCustomLevel(int page) {
+        String choices;
+        int tentatives = 5;
+        affichageText("======= Page ("+ (page + 1) + "/" + (length(customLevels) / 8 + 1) + ") =======", 0);
+        if (page == 0) {choices = "0. Retour\n";}
+        else {choices = "0. Page precedente\n";}
+
+        int limite;
+
+        if (length(customLevels) - (page * 8) > 8) {limite = 8;}
+        else {limite = length(customLevels) - (page * 8); }
+
+        int indice = 1;
+
+        while(indice <= limite) {
+            choices += "" + indice + ". Niveau " + (indice + (page * 8)) + "\n";
+            indice++;
+        }
+
+        if (limite == 8) {
+            choices += "9. Page suivante\n";
+            limite++;
+        }
+        choices += "==========================";
+        affichageText(choices, 0);
+        affichageText("Saisissez votre choix : ", 0, false);
+
+        int saisie = saisieNombreEntier(limite);
+        switch(saisie) {
+            case 0:
+                if(page == 0) {customModes();}
+                else {selectionCustomLevel(page-1); }
+                return;
+            case 9:
+                selectionCustomLevel(page+1);
+                return;
+            default:
+                playCustom(customLevels[saisie], tentatives);
+                break;
+            
         }
     }
 
@@ -1155,7 +1299,7 @@ class Main extends Program {
         if(saisie == 1) {
             creationQCM();
         } else {
-            //creationINPUT();
+            creationINPUT();
         }
     }
 
@@ -1194,7 +1338,7 @@ class Main extends Program {
             println("5. Réponse 4 (" + q.choix4 + ")");
             println("6. Bonne réponse (Réponse " + (q.answerQCM + 1) + ")");
             println("7. Valider");
-            println("======================");
+            println("=======================");
             print("Entrez votre choix : ");
             int saisie = saisieNombreEntier(7);
             switch(saisie) {
@@ -1256,7 +1400,7 @@ class Main extends Program {
             println("1. Intitulé de la question (" + q.question + ")");
             println("2. Réponse (" + q.answerInput + ")");
             println("3. Valider");
-            println("======================");
+            println("=======================");
             print("Entrez votre choix : ");
             int saisie = saisieNombreEntier(3);
             switch(saisie) {
@@ -1281,7 +1425,53 @@ class Main extends Program {
 
     // Création de niveaux personnalisés
 
-    
+    int selecLevel(int page) {
+        clearScreen();
+        String choices = "";
+        int min = 0;
+        println("======= Page ("+ (page + 1) + "/" + (length(questionList) / 9 + 1) + ") =======");
+        if (page == 0) {min = 1;}
+        else {choices = "0. Page precedente\n";}
+
+        int limite;
+
+        if (length(questionList) - (page * 8) > 8) {limite = 9;}
+        else {limite = length(questionList) - (page * 8); }
+
+        int indice = 1;
+
+        while(indice < limite) {
+            choices += "" + indice + ". Question " + (indice + (page * 8)) + " (" + questionList[indice + (page * 8)].question + ")\n";
+            indice++;
+        }
+
+        if (limite == 9) {
+            choices += "9. Page suivante\n";
+        }
+        choices += "==========================";
+        println(choices);
+        print("Sélectionnez un niveau : ");
+        int saisie = saisieNombreEntier(min, limite);
+        if(saisie == 0) {
+            return selecLevel(page-1);
+        }
+        if(saisie == 9) {
+            return selecLevel(page+1);
+        }
+        return saisie + (page*8);
+    }
+
+    void creationLevel() {
+        int[] niveau = new int[5];
+        affichageText(ANSI_BLUE + "Vous devez sélectionner 5 questions." + ANSI_RESET, 0);
+        for(int indice = 0; indice < length(niveau); indice++) {
+            affichageText(ANSI_GREY + "Sélectionnez la question " + (indice + 1) + ANSI_RESET);
+            niveau[indice] = selecLevel(0);
+        }
+        addCustomLevel(niveau);
+        affichageText("Niveau créé !");
+        mainMenu();
+    }
 
     // Initialisation du jeu ---------------------------------------------------------------------------------------
 
@@ -1481,7 +1671,7 @@ class Main extends Program {
         initCustomLevels();
 
         // Vérification de la présence d'erreurs et lancement du jeu
-        if (!loadedSuccessfully || true) {
+        if (!loadedSuccessfully) {
             affichageText(ANSI_RED + "Une erreur fatale est survenue. Veuillez relancer le jeu. Si le problème persiste, réinstallez le jeu et contactez nos équipes." + ANSI_RESET);
         } else {
             clearScreen();

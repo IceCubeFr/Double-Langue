@@ -37,3 +37,4 @@ INPUT,Fey la fée : “Fantastique ! Deuxième question maintenant. Donne moi la
 INPUT,Fey la fée : “Que t’es fort dit donc ! Passons à la dernière question maintenant. Comment traduirais-tu cette question en français : “Which is the right choice ?” ?” ,Quel est le bon choix ? ,null,null,null,null
 QCM,trtfyguijo,2,ZERFGBHJL,DCVGYUJ,DSERTGHJ,EDTYHNJKO
 QCM,ftgbnjiuygcd,2,non,non,oui,non
+INPUT,blabla,oui,null,null,null,null
