@@ -225,6 +225,10 @@ class Main extends Program {
     }
 
     void affichageVictory() {
+        /**
+         * Affichage d'un message félicitant pour la victoire
+         * Afin de clarifier le code, ce message est stocké dans un fichier .txt
+         */
         File f = newFile(VICTORY_PATH);
         while(ready(f)) {
             println(readLine(f));
@@ -234,6 +238,10 @@ class Main extends Program {
     }
 
     void affichageDefeat() {
+        /**
+         * Affichage d'un message informant de l'échec de la personne
+         * Afin de clarifier le code, ce message est stocké dans un fichier .txt
+         */
         File f = newFile(DEFEAT_PATH);
         while(ready(f)) {
             println(readLine(f));
@@ -281,6 +289,10 @@ class Main extends Program {
     }
 
     void saveQuestionCSV() {
+        /**
+         * Sauvegarde les questions de la questionList dans le fichier questions.csv
+         * Utilisé principalement dans la création de question personnalisées
+         */
         String[][] questions = new String[length(questionList)][7];
         for(int indice = 0; indice < length(questions); indice++) {
             Question q = questionList[indice];
@@ -317,6 +329,10 @@ class Main extends Program {
     }
 
     void saveCustomLevels() {
+        /**
+         * Sauvegarde des niveaux personnalisés du tableau customLevels dans le fichier customLevels.csv
+         * Utilisé pour la création de niveaux personnalisés
+         */
         String[][] f;
         if(length(customLevels) == 0) { return;}
         else { f = new String[length(customLevels, 1)][length(customLevels, 2)];}
@@ -330,6 +346,12 @@ class Main extends Program {
     }
 
     void addCustomLevel(int[] level) {
+        /**
+         * Ajout d'un niveau dans la liste customLevels et sauvegarde dans le fichier .csv
+         * Utilisé dans la création de niveaux personnalisés
+         * 
+         * @param level : Liste des indices des questions du niveau
+         */
         int[][] newList;
         if(length(customLevels) == 0) { newList = new int[1][length(level)];}
         else { newList = new int[length(customLevels) + 1][length(customLevels, 2)];}
@@ -446,6 +468,23 @@ class Main extends Program {
             }
         }
         return -1;
+    }
+
+    String removeComa (String txt) {
+        /**
+         * Retire toutes les virgules du texte mit en paramètre.
+         * Cette fonction est principalement utilisée pour la sauvegarde des questions dans les fichiers CSV pour éviter les conflits.
+         * 
+         * @param txt : Texte de base
+         * @return Texte sans les virgules
+         */
+        String res = "";
+        for (int i = 0; i < length(txt); i++) {
+            if (charAt(txt,i) != ',') {
+                res = res + charAt(txt,i);
+            }
+        }
+        return res;
     }
 
     // Gestion mots de passe ---------------------------------------------------------------------------------------
@@ -569,11 +608,11 @@ class Main extends Program {
                     print("Souhaitez-vous créer un nouvel utilisateur du nom de " + nom + " ? (o/n) ");
                     String validation = saisieReponse();
                     if (isYes(validation)) {
-                        String mdp = newMDP();
                         affichageText("Création du compte en cours . . .");
-                        Player p = newPlayer(nom, mdp);
-                        addAndSavePlayer(p);
+                        Player p = newPlayer(nom, " ");
                         actualPlayer = p;
+                        actualPlayer.mdp = newMDP();
+                        addAndSavePlayer(p);
                         affichageText("Compte créé ! Votre progression sera sauvegardée !", 0);
                         affichageText("Bienvenue sur DoubleLangue !", 0);
                         valide = true;
@@ -597,14 +636,14 @@ class Main extends Program {
          * - Modifier les paramètres du compte
          */
         affichageDrapeau();
-        affichageText("======== Bienvenue " + ANSI_GREEN + actualPlayer.username + ANSI_RESET + " ========", 0);
-        affichageText("Choisissez votre mode de jeu :\n0. Déconnexion\n1. Mode histoire (Progression : " + (actualPlayer.storyCompleted * 100 / length(dialogues)) + " %)\n2. Mode entraînement (Progression : " + (actualPlayer.trainingCompleted * 100 / length(trainingLevels)) + " %)\n3. Questions et niveaux personnalisés\n4. Règles du jeu \n5. Paramètres", 0);
+        affichageText("=========== Bienvenue " + ANSI_GREEN + actualPlayer.username + ANSI_RESET + " ===========", 0);
+        affichageText("Choisissez votre mode de jeu :\n0. Déconnexion\n1. Mode histoire (Progression : " + (actualPlayer.storyCompleted * 100 / length(dialogues)) + " %)\n2. Mode entraînement (Progression : " + (actualPlayer.trainingCompleted * 100 / length(trainingLevels)) + " %)\n3. Questions et niveaux personnalisés (" + ANSI_BLINK_SLOW + ANSI_RED + "Nouveau!" + ANSI_RESET + ")\n4. Règles du jeu \n5. Paramètres", 0);
         affichageText("Entrez votre choix : ", 0, false);
         int option = saisieNombreEntier(5);
         switch (option) {
             case 0:
                 affichageText("Votre progression va être sauvegardée. Veuillez patienter . . .");
-                affichageText("Progression sauvegardée ! A très vite !");
+                savePlayerCSV();
                 connectionMenu();
                 return;
             case 1:
@@ -643,24 +682,11 @@ class Main extends Program {
         mainMenu();
     }
 
-    void createCustoms() {
-        affichageText("Que souhaitez-vous créer ?\n0. Rien\n1. Nouvelle question\n2. Nouveau niveau", 0);
-        affichageText("Sélection : ", 0, false);
-        int saisie = saisieNombreEntier(2);
-        switch(saisie) {
-            case 0:
-                mainMenu();
-                break;
-            case 1:
-                selectionType();
-                break;
-            case 2:
-                creationLevel();
-                break;
-        }
-    }
-
     void customModes() {
+        /**
+         * Sélection du mode personnalisé
+         * Dans ce menu, l'utilisateur choisira entre jouer et créer un niveau personnalisé
+         */
         clearScreen();
         affichageText(ANSI_GREEN + "========= Niveaux personnalisés =========" + ANSI_RESET, 0);
         affichageText("Sélectionnez le mode :\n0. Retour\n1. Jouer aux niveaux perso\n2. Mode création\nSélection : ", 0, false);
@@ -674,6 +700,27 @@ class Main extends Program {
                 break;
             case 2:
                 createCustoms();
+                break;
+        }
+    }
+
+    void createCustoms() {
+        /**
+         * Menu de sélection d'une question personnalisé ou d'un niveau personnalisé
+         * L'utilisateur choisira entre créer une question et un niveau
+         */
+        affichageText("Que souhaitez-vous créer ?\n0. Rien\n1. Nouvelle question\n2. Nouveau niveau", 0);
+        affichageText("Sélection : ", 0, false);
+        int saisie = saisieNombreEntier(2);
+        switch(saisie) {
+            case 0:
+                mainMenu();
+                break;
+            case 1:
+                selectionType();
+                break;
+            case 2:
+                creationLevel();
                 break;
         }
     }
@@ -814,12 +861,14 @@ class Main extends Program {
          * Si le joueur a fini tous les niveaux du module d'entraînement, la possibilité de jouer le niveau suivant est caché
          * Sinon, le joueur peut soit revenir en arrière, soit rejouer un niveau, soit joueur le niveau suivant
          */
+        clearScreen();
         if(actualPlayer.trainingCompleted == 0) {
-            affichageText("Bienvenue dans le module d'entraînement.", 0);
+            affichageText("===== Bienvenue dans le module d'entraînement ! =====", 0);
             affichageText("Ici, vous trouverez des niveaux pour vous entraîner au mode histoire.", 0);
             affichageText("Commençons par le premier niveau !", 0);
             playTraining(0);
         } else {
+            affichageText("============ Mode Entraînement ============", 0);
             affichageText("Lors de votre dernière session, vous êtes arrivés au niveau " + actualPlayer.trainingCompleted + " sur les " + length(trainingLevels) + " disponibles.");
             int max;
             if(actualPlayer.trainingCompleted >= length(trainingLevels)) {
@@ -830,26 +879,17 @@ class Main extends Program {
                 max = 2;
             }
             affichageText("Entrez votre sélection : ", 0, false);
-            int saisie = saisieNombreEntier(2);
+            int saisie = saisieNombreEntier(max);
             switch(saisie) {
                 case 0:
                     savePlayerCSV();
                     mainMenu();
                     return;
                 case 1:
-                    affichageText("Vous pouvez rejouer un niveau que vous avez déjà terminé. Choisissez un niveau : ", 0, false);
                     trainingSelection(0);
                     return;
                 case 2:
-                    if(actualPlayer.trainingCompleted < length(trainingLevels)) {playTraining(actualPlayer.trainingCompleted);}
-                    else {
-                        affichageText("Vous avez terminé tous les niveaux. Vous pouvez les rejouer ou attendre une prochaine mise à jour.");
-                        trainingModeSelection();
-                    }
-                    return;
-                default:
-                    affichageText("Veuillez réessayer");
-                    trainingModeSelection();
+                    playTraining(actualPlayer.trainingCompleted);
                     return;
             }
         }
@@ -865,8 +905,10 @@ class Main extends Program {
          * 
          * @param page : Numéro de la page
          */
+        clearScreen();
+        affichageText("Vous pouvez rejouer un niveau que vous avez déjà terminé. Choisissez un niveau : ", 0);
         String choices;
-        affichageText("======= Page ("+ (page + 1) + "/" + (length(trainingLevels) / 8 + 1) + ") =======", 0);
+        println("======= Page ("+ (page + 1) + "/" + (length(trainingLevels) / 8 + 1) + ") =======");
         if (page == 0) {choices = "0. Retour\n";}
         else {choices = "0. Page precedente\n";}
 
@@ -887,7 +929,7 @@ class Main extends Program {
             limite++;
         }
         choices += "==========================";
-        affichageText(choices, 0);
+        println(choices);
         affichageText("Saisissez votre choix : ", 0, false);
 
         int saisie = saisieNombreEntier(limite);
@@ -979,6 +1021,14 @@ class Main extends Program {
     // Jouer niveaux customs
 
     void playCustom(int[] questions, int tentatives) {
+        /**
+         * Lance et joue les questions d'un niveau personnalisé
+         * La fonction transforme la liste d'indice questions en une liste de question pour ensuite utiliser la fonction play.
+         * 
+         * @param questions : Liste des indices des questions
+         * @param tentatives : Nombre de tentatives
+         * @see play(Question[], int)
+         */
         Question[] niveau = new Question[length(questions)];
         for(int indice = 0; indice < length(questions); indice++) {
             niveau[indice] = questionList[questions[indice]];
@@ -994,8 +1044,17 @@ class Main extends Program {
     }
 
     void selectionCustomLevel(int page) {
+        /**
+         * Sélection et lancement d'un niveau personnalisé
+         * Pour un affichage optimisé et clair, l'affichage se fait en pages
+         */
+        clearScreen();
         String choices;
         int tentatives = 5;
+        if(length(customLevels) == 0) {
+            affichageText(ANSI_RED + "Aucun niveau personnalisé n'a été créé. Rendez-vous dans le mode création pour créer les vôtres !");
+            return;
+        }
         affichageText("======= Page ("+ (page + 1) + "/" + (length(customLevels) / 8 + 1) + ") =======", 0);
         if (page == 0) {choices = "0. Retour\n";}
         else {choices = "0. Page precedente\n";}
@@ -1119,7 +1178,10 @@ class Main extends Program {
         affichageText(".", 500);
         savePlayerCSV();
         affichageText("Vous venez de terminer la partie " + actualPlayer.storyCompleted + " du mode histoire. Souhaitez-vous continuer ? (o/n)",0, false);
-        if(isYes(saisieReponse())) {story(actualPlayer.storyCompleted);}
+        if(isYes(saisieReponse())) {
+            clearScreen();
+            story(actualPlayer.storyCompleted);
+        }
         else {mainMenu();}
         return;
     }
@@ -1161,6 +1223,8 @@ class Main extends Program {
          * - Réinitialisation de la progression
          * - Suppression du compte
          */
+        clearScreen();
+        affichageText("=========== Paramètres du jeu ============", 0);
         affichageText("Choisissez un paramètre :\n0. Retour\n1. Modifier votre pseudo\n2. Réinitialiser le profil\n3. Définir un nouveau mot de passe\n4. Supprimer votre compte", 0);
         affichageText("Saisissez votre choix : ", 0, false);
         int entree = saisieNombreEntier(4);
@@ -1375,6 +1439,11 @@ class Main extends Program {
                 
             }
         }
+        q.question = removeComa(q.question);
+        q.choix1 = removeComa(q.choix1);
+        q.choix2 = removeComa(q.choix2);
+        q.choix3 = removeComa(q.choix3);
+        q.choix4 = removeComa(q.choix4);
         addQuestionToList(q);
         mainMenu();
     }
@@ -1419,13 +1488,23 @@ class Main extends Program {
                     valide = true;
             }
         }
+        q.question = removeComa(q.question);
+        q.answerInput = removeComa(q.answerInput);
         addQuestionToList(q);
         mainMenu();
     }
 
-    // Création de niveaux personnalisés
+    // Création de niveaux personnalisés ---------------------------------------------------------------------------------------
 
     int selecLevel(int page) {
+        /**
+         * Menu de sélection d'une question pour l'ajouter à la liste d'un niveau
+         * L'affichage se fait par page pour afficher le maximum de questions tout en restant clair
+         * 
+         * @param page : Numéro de page
+         * @return Indice de la question à ajouter
+         * @see creationLevel()
+         */
         clearScreen();
         String choices = "";
         int min = 0;
@@ -1462,6 +1541,11 @@ class Main extends Program {
     }
 
     void creationLevel() {
+        /**
+         * Menu de création d'un niveau personnalisé
+         * Cette fonction fait appel à selecLevel() 5 fois pour récupérer les 5 questions composant le niveau.
+         * Le niveau est automatiquement sauvegardé dans la liste globale customLevels puis enregistrée dans le fichier customLevels.csv
+         */
         int[] niveau = new int[5];
         affichageText(ANSI_BLUE + "Vous devez sélectionner 5 questions." + ANSI_RESET, 0);
         for(int indice = 0; indice < length(niveau); indice++) {
