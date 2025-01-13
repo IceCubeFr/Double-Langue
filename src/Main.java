@@ -8,6 +8,7 @@ class Main extends Program {
     final String QUESTIONS_PATH = "./files/questions.csv";
     final String TRAINING_LEVELS_PATH = "./files/trainingLevels.csv";
     final String PLAYERS_PATH = "./files/players.csv";
+    final String CUSTOM_LEVELS_PATH = "./files/customLevels.csv";
     final String DRAPEAU_PATH = "./ressources/drapeau_en.txt";
     final String DIALOGUES_PATH = "./files/dialogues.txt";
     final String PIERRE_PATH = "./ressources/pierre.txt";
@@ -17,6 +18,7 @@ class Main extends Program {
     boolean loadedSuccessfully = true;
 
     int[][] trainingLevels = new int[0][0];
+    int[][] customLevels = new int[0][0];
 
     Question[] questionList = new Question[0];
 
@@ -258,6 +260,42 @@ class Main extends Program {
         savePlayerCSV();
     }
 
+    void saveQuestionCSV() {
+        String[][] questions = new String[length(questionList)][7];
+        for(int indice = 0; indice < length(questions); indice++) {
+            Question q = questionList[indice];
+            questions[indice][0] = questionTypeToString(q.type);
+            questions[indice][1] = q.question;
+            if(q.type == QuestionType.INPUT) {
+                questions[indice][2] = q.answerInput;
+            } else {
+                questions[indice][2] = "" + q.answerQCM;
+                questions[indice][3] = "" + q.choix1;
+                questions[indice][4] = "" + q.choix2;
+                questions[indice][5] = "" + q.choix3;
+                questions[indice][6] = "" + q.choix4;
+            }
+        }
+        saveCSV(questions, QUESTIONS_PATH);
+        affichageText("[SAVE] Questions sauvegardées !", 0);
+    }
+
+    void addQuestionToList(Question q) {
+        /**
+         * Ajoute la question q à la variable globale questionList.
+         * Cette fonction sauvegarde automatiquement la nouvelle liste dans le fichier questions.csv
+         * 
+         * @param q : Question à ajouter
+         */
+        Question[] newQuestionList = new Question[length(questionList) + 1];
+        for(int indice = 0; indice < length(questionList); indice++) {
+            newQuestionList[indice] = questionList[indice];
+        }
+        newQuestionList[length(questionList)] = q;
+        questionList = newQuestionList;
+        saveQuestionCSV();
+    }
+
     // Fonctions diverses ---------------------------------------------------------------------------------------
 
     boolean isYes(String txt) {
@@ -447,7 +485,7 @@ class Main extends Program {
         affichageText(ANSI_RED + "Bienvenue sur DoubleLangue !" + ANSI_RESET + "\nPour commencer, merci d'entrer votre nom d'utilisateur.\n" + ANSI_BLUE + "Votre progression sera sauvegardée par le biais de ce nom." + ANSI_RESET);
         while(!valide) {
             print("Nom d'utilisateur (exit pour quitter) : ");
-            String nom = toUpperCase(readString());
+            String nom = toUpperCase(saisieReponse(false));
             if (playerExists(nom)) {
                 actualPlayer = getPlayerByName(nom);
                 affichageText("Utilisateur " + actualPlayer.username + " trouvé.");
@@ -513,22 +551,29 @@ class Main extends Program {
          */
         affichageDrapeau();
         affichageText("Bienvenue " + ANSI_GREEN + actualPlayer.username + ANSI_RESET + "!", 0);
-        affichageText("Choisissez votre mode de jeu :\n0. Déconnexion\n1. Mode histoire (Progression : " + (actualPlayer.storyCompleted * 100 / length(dialogues)) + " %)\n2. Mode entraînement (Progression : " + (actualPlayer.trainingCompleted * 100 / length(trainingLevels)) + " %)\n3. Règles du jeu\n4. Paramètres", 0);
+        affichageText("Choisissez votre mode de jeu :\n0. Déconnexion\n1. Mode histoire (Progression : " + (actualPlayer.storyCompleted * 100 / length(dialogues)) + " %)\n2. Mode entraînement (Progression : " + (actualPlayer.trainingCompleted * 100 / length(trainingLevels)) + " %)\n3. Règles du jeu\n4. Questions customs \n5. Paramètres", 0);
         affichageText("Entrez votre choix : ", 0, false);
-        int option = saisieNombreEntier(4);
+        int option = saisieNombreEntier(5);
         switch (option) {
             case 0:
                 affichageText("Votre progression va être sauvegardée. Veuillez patienter . . .");
                 affichageText("Progression sauvegardée ! A très vite !");
                 connectionMenu();
+                return;
             case 1:
                 clearScreen();
                 story(actualPlayer.storyCompleted);
+                return;
             case 2:
                 trainingModeSelection();
+                return;
             case 3:
                 rules();
+                return;
             case 4:
+                selectionType();
+                return;
+            case 5:
                 settings();
         }
     }
@@ -570,6 +615,31 @@ class Main extends Program {
         while(!valide) {
             saisie = readString();
             if(length(saisie) == 1 && contains("0123456789", charAt(saisie, 0)) && stringToInt(saisie) <= maxOption) {
+                valide = true;
+            } else {
+                println("Saisie incorrecte.");
+            }
+        }
+        return stringToInt(saisie);
+    }
+
+    int saisieNombreEntier(int minOption, int maxOption) {
+        /**
+         * Contrôle la saisie d'un nombre entier par l'utilisateur entre le nombre minimum et le nombre maximum définits en paramètre
+         * 
+         * La fonction fonctionne de la même manière que saisieNombreEntier(int maxOption)
+         * Les bornes sont incluses ( nombres acceptés : [minOption, maxOption] )
+         * 
+         * @param minOption : Chiffre minimum pouvant être entré par l'utilisateur
+         * @param maxOption : Chiffre maximum pouvant être entré par l'utilisateur
+         * @return Entier entré par l'utilisateur
+         * @see saisieNombreEntier(int maxOption)
+         */
+        boolean valide = false;
+        String saisie = "";
+        while(!valide) {
+            saisie = readString();
+            if(length(saisie) == 1 && contains("0123456789", charAt(saisie, 0)) && stringToInt(saisie) <= maxOption && stringToInt(saisie) >= minOption) {
                 valide = true;
             } else {
                 println("Saisie incorrecte.");
@@ -634,6 +704,24 @@ class Main extends Program {
         return readString();
     } 
 
+    String saisieReponse(boolean canBeEmpty) {
+        /**
+         * Récupère et renvoie l'entrée d'un utilisateur
+         * 
+         * Si le paramètre est sur true, la fonction n'acceptera pas les entrées vides
+         * 
+         * @param canBeEmpty : Entrée vide de l'utilisateur valide ou non
+         * @return Entrée utilisateur
+         * @see saisieReponse()
+         */
+        String saisie = readString();
+        if(!canBeEmpty && equals(saisie, "")) {
+            println(ANSI_RED + "L'entrée ne peut pas être vide. Réessayez" + ANSI_RESET);
+            return saisieReponse(canBeEmpty);
+        }
+        return saisie;
+    } 
+
     // Mode entraînement ---------------------------------------------------------------------------------------
 
     void trainingModeSelection() {
@@ -665,18 +753,22 @@ class Main extends Program {
                 case 0:
                     savePlayerCSV();
                     mainMenu();
+                    return;
                 case 1:
                     affichageText("Vous pouvez rejouer un niveau que vous avez déjà terminé. Choisissez un niveau : ", 0, false);
                     trainingSelection(0);
+                    return;
                 case 2:
                     if(actualPlayer.trainingCompleted < length(trainingLevels)) {playTraining(actualPlayer.trainingCompleted);}
                     else {
                         affichageText("Vous avez terminé tous les niveaux. Vous pouvez les rejouer ou attendre une prochaine mise à jour.");
                         trainingModeSelection();
                     }
+                    return;
                 default:
                     affichageText("Veuillez réessayer");
                     trainingModeSelection();
+                    return;
             }
         }
     }
@@ -721,10 +813,13 @@ class Main extends Program {
             case 0:
                 if(page == 0) {trainingModeSelection();}
                 else {trainingSelection(page-1); }
+                return;
             case 9:
                 trainingSelection(page+1);
+                return;
             default:
                 playTraining(saisie + 8 * page);
+                return;
         }
     }
 
@@ -1028,6 +1123,166 @@ class Main extends Program {
         settings();
     }
 
+    // Création de questions personnalisées ---------------------------------------------------------------------------------------
+
+    Question newQuestion(QuestionType type) {
+        /**
+         * Création d'une nouvelle question de type type.
+         * 
+         * Renvoie la question avec le type initialisé
+         * 
+         * @param type : Type de question
+         * @return Nouvel objet de type question
+         */
+        Question q = new Question();
+        q.type = type;
+        return q;
+    }
+
+    void selectionType() {
+        /**
+         * Selection du type de question que le joueur souhaite créer
+         * 
+         * La question fait appel à la fonction creationQCM() ou creationINPUT() en fonction du type 
+         * 
+         * @see saveQuestionCSV()
+         */
+        affichageText("Choisissez le type de question que vous souhaitez créer parmi :", 0);
+        affichageText("1. QCM", 0);
+        affichageText("2. INPUT", 0);
+        affichageText("Votre choix : ", 0, false);
+        int saisie = saisieNombreEntier(1,2);
+        if(saisie == 1) {
+            creationQCM();
+        } else {
+            //creationINPUT();
+        }
+    }
+
+    void creationQCM() {
+        /**
+         * Menu de création d'une question de type QCM
+         * La personne peut personnaliser sa question et les différentes réponses.
+         * A la fin de la saisie et après validation, la question est ajoutée à la liste des questions et sauvegardée dans le fichier questions.csv
+         */
+        Question q = newQuestion(QuestionType.QCM);
+        boolean valide = false;
+        affichageText("Quel est l'intitulé de la question (exemple : Quelle est la traduction de 'blue') : ", 0, false);
+        q.question = saisieReponse(false);
+        affichageText("Bien. Maintenant, vous allez saisir les 4 choix possible par l'utilisateur.", 0);
+        affichageText("Entrez la réponse 1 : ", 0, false);
+        q.choix1 = saisieReponse(false);
+        affichageText("Entrez la réponse 2 : ", 0, false);
+        q.choix2 = saisieReponse(false);
+        affichageText("Entrez la réponse 3 : ", 0, false);
+        q.choix3 = saisieReponse(false);
+        affichageText("Entrez la réponse 4 : ", 0, false);
+        q.choix4 = saisieReponse(false);
+        affichageText("Parmi ces réponses, laquelle est la bonne ? \n0. " + q.choix1 +  "\n1. " + q.choix2 +"\n2. " + q.choix3 + "\n3. " + q.choix4, 0);
+        affichageText("Bonne réponse : ", 0, false);
+        q.answerQCM = saisieNombreEntier(3);
+        affichageText("Voyons en revue tout ce que vous avez entré : ");
+        while(!valide) {
+            clearScreen();
+            println("===== Question " + length(questionList) + " =====");
+            println("Type : " + questionTypeToString(q.type));
+            println("0. Retour sans sauvegarder");
+            println("1. Intitulé de la question (" + q.question + ")");
+            println("2. Réponse 1 (" + q.choix1 + ")");
+            println("3. Réponse 2 (" + q.choix2 + ")");
+            println("4. Réponse 3 (" + q.choix3 + ")");
+            println("5. Réponse 4 (" + q.choix4 + ")");
+            println("6. Bonne réponse (Réponse " + (q.answerQCM + 1) + ")");
+            println("7. Valider");
+            println("======================");
+            print("Entrez votre choix : ");
+            int saisie = saisieNombreEntier(7);
+            switch(saisie) {
+                case 0:
+                    mainMenu();
+                    return;
+                case 1:
+                    affichageText("Quel est l'intitulé de la question (exemple : Quelle est la traduction de 'blue') : ", 0, false);
+                    q.question = saisieReponse(false);
+                    break;
+                case 2:
+                    affichageText("Entrez la réponse 1 : ", 0, false);
+                    q.choix1 = saisieReponse(false);
+                    break;
+                case 3:
+                    affichageText("Entrez la réponse 2 : ", 0, false);
+                    q.choix2 = saisieReponse(false);
+                    break;
+                case 4:
+                    affichageText("Entrez la réponse 3 : ", 0, false);
+                    q.choix3 = saisieReponse(false);
+                    break;
+                case 5:
+                    affichageText("Entrez la réponse 4 : ", 0, false);
+                    q.choix4 = saisieReponse(false);
+                    break;
+                case 6:
+                    affichageText("Parmi ces réponses, laquelle est la bonne ? \n0. " + q.choix1 +  "\n1. " + q.choix2 +"\n2. " + q.choix3 + "\n3. " + q.choix4, 0);
+                    affichageText("Bonne réponse : ", 0, false);
+                    q.answerQCM = saisieNombreEntier(3);
+                    break;
+                case 7:
+                    valide = true;
+                
+            }
+        }
+        addQuestionToList(q);
+        mainMenu();
+    }
+
+    void creationINPUT() {
+        /**
+         * Menu de création d'une question de type INPUT
+         * La personne peut personnaliser sa question et la réponse
+         * A la fin de la saisie et après validation, la question est ajoutée à la liste des questions et sauvegardée dans le fichier questions.csv
+         */
+        Question q = newQuestion(QuestionType.INPUT);
+        boolean valide = false;
+        affichageText("Quel est l'intitulé de la question (exemple : Quelle est la traduction de 'blue') : ", 0, false);
+        q.question = saisieReponse(false);
+        affichageText("Quelle est la réponse à la question ? ", 0, false);
+        q.answerInput = saisieReponse(false);
+        affichageText("Bien. Passons en revue votre saisie : ");
+        while(!valide) {
+            clearScreen();
+            println("===== Question " + length(questionList) + " =====");
+            println("Type : " + questionTypeToString(q.type));
+            println("0. Retour sans sauvegarder");
+            println("1. Intitulé de la question (" + q.question + ")");
+            println("2. Réponse (" + q.answerInput + ")");
+            println("3. Valider");
+            println("======================");
+            print("Entrez votre choix : ");
+            int saisie = saisieNombreEntier(3);
+            switch(saisie) {
+                case 0:
+                    mainMenu();
+                    return;
+                case 1:
+                    affichageText("Quel est l'intitulé de la question (exemple : Quelle est la traduction de 'blue') : ", 0, false);
+                    q.question = saisieReponse(false);
+                    break;
+                case 2:
+                    affichageText("Quelle est la réponse à la question ? ", 0, false);
+                    q.answerInput = saisieReponse(false);
+                    break;
+                case 3:
+                    valide = true;
+            }
+        }
+        addQuestionToList(q);
+        mainMenu();
+    }
+
+    // Création de niveaux personnalisés
+
+    
+
     // Initialisation du jeu ---------------------------------------------------------------------------------------
 
     void initQuestion() {
@@ -1105,6 +1360,31 @@ class Main extends Program {
         catch (Exception e) {
             loadedSuccessfully = false;
             println("\t" + ANSI_RED + "ERREUR " + ANSI_RESET + "Initialisation des niveaux entraînement interrompue : " + e);
+        }
+    }
+
+    void initCustomLevels() {
+        /**
+         * Initialisation des niveaux du fichier customLevels.csv dans les variables globales correspondantes
+         * 
+         * Le fichier se situe dans le dossier files
+         * Un log est effectué vérifiant le bon déroulé de l'itinialisation ainsi que le nombre de niveaux chargés.
+         * En cas d'erreur, le jeu ne se lancera pas et un message d'erreur s'affichera, invitant l'utilisateur à contacter l'équipe de dev
+         */
+        print("[LOAD] Custom Levels");
+        try {
+            CSVFile f = loadCSV(CUSTOM_LEVELS_PATH);
+            if(rowCount(f) > 0) { customLevels = new int[rowCount(f)][columnCount(f)]; }
+            for(int ligne = 0; ligne < length(customLevels, 1); ligne++) {
+                for(int colonne = 0; colonne < length(customLevels, 2); colonne++) {
+                    customLevels[ligne][colonne] = stringToInt(getCell(f, ligne, colonne));
+                }
+            }
+            println("\t" + ANSI_GREEN + "OK " + ANSI_RESET + length(customLevels) + " niveaux trouvés");
+        }
+        catch (Exception e) {
+            loadedSuccessfully = false;
+            println("\t" + ANSI_RED + "ERREUR " + ANSI_RESET + "Initialisation des niveaux customs interrompue : " + e);
         }
     }
 
@@ -1198,9 +1478,10 @@ class Main extends Program {
         initTrainingLevels();
         initPlayer();
         initDialogues();
+        initCustomLevels();
 
         // Vérification de la présence d'erreurs et lancement du jeu
-        if (!loadedSuccessfully) {
+        if (!loadedSuccessfully || true) {
             affichageText(ANSI_RED + "Une erreur fatale est survenue. Veuillez relancer le jeu. Si le problème persiste, réinstallez le jeu et contactez nos équipes." + ANSI_RESET);
         } else {
             clearScreen();

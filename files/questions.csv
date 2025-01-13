@@ -1,37 +1,39 @@
 QCM,Comment se dit «  compréhensif » en anglais ?,1,comprehend,understanble,understand,constable
-INPUT,Que signifie l’expression « gtg » ?,got to go,,,,
+INPUT,Que signifie l’expression « gtg » ?,got to go,null,null,null,null
 QCM,Comment se dit « une donnée » en anglais ?,3,a base,a partition,a dare,a data
-INPUT,Traduisez « suivre » en anglais.,follow,,,,
-INPUT,Complétez la phrase avec le bon conditionnel : If I had known I ___ have helped you. ,would,,,,
+INPUT,Traduisez « suivre » en anglais.,follow,null,null,null,null
+INPUT,Complétez la phrase avec le bon conditionnel : If I had known I ___ have helped you. ,would,null,null,null,null
 QCM,Quel mot signifie « to postpone » ? ,2,to cancel,to reschedule,to delay,to confirm
 QCM,Quel est le sens de l'expression « to beat around the bush » ? ,0,éviter de parler directement d'un sujet ,Courir autour d'un buisson ,Faire preuve de patience ,être direct et franc 
 QCM,Identifiez le synonyme correct pour « meticulous ».,1,careless,precise,lazy,impulsive
 QCM,Quelle est la signification de l'expression « to spill the beans » ? ,1,Gaspiller de la nourriture,Révéler un secret,être maladroit,Perdre patience
 QCM,Quelle est le synonyme du mot « Eloquent » ?,0,persuasive,inarticular,confused,hesitant
 QCM,Quelle est le synonyme du mot « Tenacious » ?,3,weak,indecisive,timid,persistant
-INPUT,Que signifie l’expression « lol » ?,laughing out loud,,,,
-INPUT,Traduisez « affamé » en anglais.,starved,,,,
-INPUT,Comment se dit « cartouche » en anglais ?,cartridge,,,,
-INPUT,Comment se dit « flâner » en anglais ? (mettre « to » pour la base verbale),to stroll,,,,
+INPUT,Que signifie l’expression « lol » ?,laughing out loud,null,null,null,null
+INPUT,Traduisez « affamé » en anglais.,starved,null,null,null,null
+INPUT,Comment se dit « cartouche » en anglais ?,cartridge,null,null,null,null
+INPUT,Comment se dit « flâner » en anglais ? (mettre « to » pour la base verbale),to stroll,null,null,null,null
 QCM,Comment se traduit l’expression « avoir le coeur sur la main » ?,0,to have a heart of gold,to wear your heart on your sleeve,to have a big heart,to be a soft touch
-INPUT,Comment se dit « chinchilla » en anglais ? ,chinchilla,,,,
+INPUT,Comment se dit « chinchilla » en anglais ? ,chinchilla,null,null,null,null
 QCM,Qu’est-ce que l’expression « cya » signifie ?,1,hello,goodbye,thank you,congratulations
-INPUT,Comment se dit « être » en anglais ?,be,,,,
+INPUT,Comment se dit « être » en anglais ?,be,null,null,null,null
 QCM,Un « papillon » se traduit par quel mot ?,3,butter,fly,utterflie,butterfly
 QCM,Comment se dit « sous terre » en anglais ?,2,underdirt,dirtunder,underground,grounddirt
 QCM,Comment se conjugue « avoir » au présent simple à la 3ème personne ?,3,have,had,having,has
 QCM,« Bleu clair » se dit comment en anglais ? ,0,light blue,blue,dark blue,blueish
 QCM,Complétez la phrase avec le bon conditionnel : I ___ marry you.,3,can,would,should,will
-INPUT,Comment se dit « gagner » en anglais ?,win,,,,
-INPUT,Traduisez « bâteau » en anglais.,boat,,,,
-INPUT,Que signifie l’expression « brb » ?,be right back,,,,
-INPUT,Quelle est le synonyme du mot « children » ?,kids,,,,
-INPUT,Comment se dit « ordinateur portable » en anglais ?,laptop,,,,
+INPUT,Comment se dit « gagner » en anglais ?,win,null,null,null,null
+INPUT,Traduisez « bâteau » en anglais.,boat,null,null,null,null
+INPUT,Que signifie l’expression « brb » ?,be right back,null,null,null,null
+INPUT,Quelle est le synonyme du mot « children » ?,kids,null,null,null,null
+INPUT,Comment se dit « ordinateur portable » en anglais ?,laptop,null,null,null,null
 QCM,Comment se dit « un lampadaire » en anglais ?,0,a floor lamp,a high lamp,a high light,a light high
-INPUT,Fey la fée : “Faisons un exemple ! Donne-moi le verbe “Savoir” en anglais.” ,know,,,,
-INPUT,Fey la fée : “Quelle est la traduction en français du mot “Kitchen” ?” ,cuisine,,,,
-INPUT,Fey la fée : “Première question. Traduit cette phrase en anglais : “J’aimerais avoir un chat roux.”” ,I would like to have a ginger cat ,,,,
-INPUT,Fey la fée : “Bravo ! Maintenant la deuxième question. Qu’est-ce qu’un “Screen” en français ?” ,écran,,,,
-INPUT,Fey la fée : “Bien. première question. Traduis moi cette phrase en français : “I’m scared of heigh. I don’t like falling.” ,j’ai peur du vide. je n’aime pas tomber ,,,,
-INPUT,Fey la fée : “Fantastique ! Deuxième question maintenant. Donne moi la traduction en français de ce verbe : “Deceive”. ,tromper,,,,
-INPUT,Fey la fée : “Que t’es fort dit donc ! Passons à la dernière question maintenant. Comment traduirais-tu cette question en français : “Which is the right choice ?” ?” ,Quel est le bon choix ? ,,,,
+INPUT,Fey la fée : “Faisons un exemple ! Donne-moi le verbe “Savoir” en anglais.” ,know,null,null,null,null
+INPUT,Fey la fée : “Quelle est la traduction en français du mot “Kitchen” ?” ,cuisine,null,null,null,null
+INPUT,Fey la fée : “Première question. Traduit cette phrase en anglais : “J’aimerais avoir un chat roux.”” ,I would like to have a ginger cat ,null,null,null,null
+INPUT,Fey la fée : “Bravo ! Maintenant la deuxième question. Qu’est-ce qu’un “Screen” en français ?” ,écran,null,null,null,null
+INPUT,Fey la fée : “Bien. première question. Traduis moi cette phrase en français : “I’m scared of heigh. I don’t like falling.” ,j’ai peur du vide. je n’aime pas tomber ,null,null,null,null
+INPUT,Fey la fée : “Fantastique ! Deuxième question maintenant. Donne moi la traduction en français de ce verbe : “Deceive”. ,tromper,null,null,null,null
+INPUT,Fey la fée : “Que t’es fort dit donc ! Passons à la dernière question maintenant. Comment traduirais-tu cette question en français : “Which is the right choice ?” ?” ,Quel est le bon choix ? ,null,null,null,null
+QCM,trtfyguijo,2,ZERFGBHJL,DCVGYUJ,DSERTGHJ,EDTYHNJKO
+QCM,ftgbnjiuygcd,2,non,non,oui,non

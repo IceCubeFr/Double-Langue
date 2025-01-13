@@ -1,7 +1,8 @@
 ﻿As-tu déjà été dans une situation où tu te réveilles dans une forêt et que tu ne te souviens de rien de ta vie ?
 Et bien c’est ton cas maintenant, [user]. Te voilà dans une grande forêt avec aucun souvenir de ta vie passée.
 La seule chose dont tu te souviens est ton prénom, [user]. . .
-–"Le pire dans l’amnésie, ce n’est pas de perdre la mémoire, c’est de perdre l’envie de la retrouver." — Albert Einstein–
+–"Le pire dans l’amnésie, ce n’est pas de perdre la mémoire, c’est de perdre l’envie de la retrouver."–
+— Albert Einstein
 _
 Pendant que j’étais en train de marcher dans la forêt j’ai été surpris de rencontrer quelqu’un, fin plutôt devrais-je dire un truc flottant.
 ??? : “Bien le bonjour ! Je suis Fey la fée ! Tu dois être [user] n’est-ce pas ? Je vais te guider pour que tu sortes de cette forêt et pour que tu puisses regagner ta mémoire.”

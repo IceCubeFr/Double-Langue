@@ -1,4 +1,4 @@
-enum QuestionType {
+enum QuestionType { 
     QCM,
     INPUT
 }

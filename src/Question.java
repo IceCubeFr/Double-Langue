@@ -4,7 +4,7 @@ class Question {
     int answerQCM; // Indice de la réponse pour les questions QCM
     String answerInput; // Réponse à donner pour les questions INPUT
 
-    // Réponses possibles pour les QCM
+    // Réponses possibles pour les QCM 
     String choix1;
     String choix2;
     String choix3;
