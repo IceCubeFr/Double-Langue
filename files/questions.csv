@@ -38,3 +38,5 @@ INPUT,Fey la fée : “Que t’es fort dit donc ! Passons à la dernière questi
 QCM,trtfyguijo,2,ZERFGBHJL,DCVGYUJ,DSERTGHJ,EDTYHNJKO
 QCM,ftgbnjiuygcd,2,non,non,oui,non
 INPUT,blabla,oui,null,null,null,null
+INPUT,Que signifie l'expr�ession anglaise "brb" ?,be right back,null,null,null,null
+QCM,test,3,oui non,non non,non oui,oui oui

@@ -14,8 +14,9 @@ class Main extends Program {
     final String PIERRE_PATH = "./ressources/pierre.txt";
     final String VICTORY_PATH = "./ressources/victory.txt";
     final String DEFEAT_PATH = "./ressources/defeat.txt";
-    final String FEY_LA_FEE = "" + ANSI_PURPLE + "Fey la fée" + ANSI_RESET;
+    final String RULES_PATH = "./ressources/rules.txt";
     final String ANSI_GREY = "\u001b[90m";
+    final String FEY_LA_FEE = ANSI_PURPLE + "Fey la fée" + ANSI_RESET;
 
     boolean loadedSuccessfully = true;
 
@@ -51,6 +52,11 @@ class Main extends Program {
         }
     }
 
+    void testStringToQuestionType() {
+        assertEquals(QuestionType.QCM, stringToQuestionType("QCM"));
+        assertEquals(QuestionType.INPUT, stringToQuestionType("INPUT"));
+    }
+
     String questionTypeToString(QuestionType type) {
         /**
          * Renvoie la chaîne de caractère correspondant au type de Question, la chaîne vide si aucun ne correspond.
@@ -67,6 +73,11 @@ class Main extends Program {
         } else {
             return "";
         }
+    }
+
+    void testQuestionTypeToString() {
+        assertEquals("QCM", questionTypeToString(QuestionType.QCM));
+        assertEquals("INPUT", questionTypeToString(QuestionType.INPUT));
     }
     
     // Fonctions d'affichage ---------------------------------------------------------------------------------------
@@ -96,21 +107,19 @@ class Main extends Program {
 
     void affichageText(String txt) {
         /**
-         * Affiche le texte mit en paramètre avec un temps d'attente par défaut de 1000 ms à la fin de l'affichage et avec un retour à la ligne
+         * Affiche le texte mit en paramètre avec un temps d'attente par défaut de 1000 ms à la fin de l'affichage, de 10 ms à la fin de chaque caractère et avec un retour à la ligne
          * 
          * Fonction d'affichage principale du jeu, elle ajoute un délai de 50 ms entre l'affichage de chaque caractère, permettant un effet de machine à écrire
          * 
+         * Cette fonction est une surcharge de la fonction affichageText(txt, delaiChar, delaiFin, retourALaLigne)
+         * 
          * @param txt : Texte à afficher
+         * @see affichageText(txt, delaiChar, delaiFin, retourALaLigne)
          */
-        for(int indice = 0; indice < length(txt); indice++) {
-            print(charAt(txt, indice));
-            delay(50);
-        }
-        delay(1000);
-        println("");
+        affichageText(txt, 10, 1000, true);
     }
 
-    void affichageText(String txt, int delai) {
+    void affichageText(String txt, int delaiFin) {
         /**
          * Affiche le texte mit en paramètre avec un délai à la fin de l'affichage et avec un retour à la ligne
          * 
@@ -118,17 +127,12 @@ class Main extends Program {
          * 
          * @param txt : Texte à afficher
          * @param delai : Délai à la fin de l'affichage
-         * @see affichageText(String)
+         * @see affichageText(txt, delaiChar, delaiFin, retourALaLigne)
          */
-        for(int indice = 0; indice < length(txt); indice++) {
-            print(charAt(txt, indice));
-            delay(50);
-        }
-        delay(delai);
-        println("");
+        affichageText(txt, 10, delaiFin, true);
     }
 
-    void affichageText(String txt, int delai, boolean retourALaLigne) {
+    void affichageText(String txt, int delaiFin, boolean retourALaLigne) {
         /**
          * Affiche le texte mit en paramètre avec un délai à la fin de l'affichage définit en paramètre et avec la possibilité de choisir un retour à la ligne ou non
          * 
@@ -137,13 +141,26 @@ class Main extends Program {
          * @param txt : Texte à afficher
          * @param delai : Délai à la fin de l'affichage
          * @param retourALaLigne : Définit s'il y aura un retour à la ligne à la fin de l'affichage
-         * @see affichageText(String)
+         * @see affichageText(txt, delaiChar, delaiFin, retourALaLigne)
+         */
+        affichageText(txt, 10, delaiFin, retourALaLigne);
+    }
+
+    void affichageText(String txt, int delaiChar, int delaiFin, boolean retourALaLigne) {
+        /**
+         * Affiche le texte mit en paramètre avec un délai à la fin de l'affichage définit en paramètre et avec la possibilité de choisir un retour à la ligne ou non
+         * 
+         * Il s'agit d'une surcharge de la fonction afficherText(String)
+         * 
+         * @param txt : Texte à afficher
+         * @param delai : Délai à la fin de l'affichage
+         * @param retourALaLigne : Définit s'il y aura un retour à la ligne à la fin de l'affichage
          */
         for(int indice = 0; indice < length(txt); indice++) {
             print(charAt(txt, indice));
-            delay(50);
+            delay(delaiChar);
         }
-        delay(delai);
+        delay(delaiFin);
         if(retourALaLigne) {
             println("");
         }
@@ -195,7 +212,6 @@ class Main extends Program {
          * @param nbQuestion : Numéro de la question
          */
         affichageText("Question " + nbQuestion + " : " + q.question);
-        print("Votre réponse : ");
     }
 
     void affichageInput(Question q) {
@@ -208,7 +224,6 @@ class Main extends Program {
          * @param q : Question à afficher
          */
         affichageDialogue(q.question);
-        print("Votre réponse : ");
     }
 
     void affichageQCM(Question q, int nbQuestion) {
@@ -221,7 +236,6 @@ class Main extends Program {
          * @ param nbQuestion : Numéro de la question
          */
         affichageText("Question " + nbQuestion + " : " + q.question + "\n1. " + q.choix1 + "\n2. " + q.choix2 + "\n3. " + q.choix3 + "\n4. " + q.choix4);
-        print("Votre réponse : ");
     }
 
     void affichageVictory() {
@@ -377,6 +391,12 @@ class Main extends Program {
         return equals(txt, "o"); 
     }
 
+    void testIsYes() {
+        assertTrue(isYes("o"));
+        assertFalse(isYes("n"));
+        assertFalse(isYes("p"));
+    }
+
     Player newPlayer(String nom, String mdp) {
         /**
          * Renvoie un nouveau joueur de type Player avec le username et le mot de passe correspondant aux paramètres
@@ -394,6 +414,12 @@ class Main extends Program {
         p.storyCompleted = 0;
         p.mdp = mdp;
         return p;
+    }
+
+    void testNewPlayer() {
+        Player p = newPlayer("bob", "bobob");
+        assertEquals(p.username, "bob");
+        assertEquals(p.mdp, "bobob");
     }
 
     boolean contains(String txt, char carac) {
@@ -415,6 +441,13 @@ class Main extends Program {
             indice++;
         }
         return found;
+    }
+
+    void testContains() {
+        assertTrue(contains("abc", 'a'));
+        assertFalse(contains("", 'a'));
+        assertFalse(contains("abc", 'g'));
+        assertTrue(contains("0123", '0'));
     }
 
     boolean playerExists(String name) {
@@ -487,6 +520,13 @@ class Main extends Program {
         return res;
     }
 
+    void testRemoveComa() {
+        assertEquals("abc", removeComa("a,b,c,"));
+        assertEquals("", removeComa(","));
+        assertEquals("aB;cD", removeComa("aB,;cD"));
+        assertEquals("aabbcc", removeComa("aabbcc"));
+    }
+
     // Gestion mots de passe ---------------------------------------------------------------------------------------
 
     String cryptage(String txt, char key) {
@@ -507,6 +547,15 @@ class Main extends Program {
         return mdp;
     }
 
+    String decryptage(String txt, char key) {
+        String mdp = "";
+        String username = actualPlayer.username;
+        for(int indice = 0; indice < length(txt); indice++) {
+            mdp = mdp + (char)(charAt(txt, indice) - key - charAt(username, indice%length(username)));
+        }
+        return mdp;
+    }
+
     String newMDP() {
         /**
          * Gestion de la création d'un nouveau mot de passe
@@ -516,10 +565,8 @@ class Main extends Program {
          * 
          * @return Nouveau mot de passe crypté
          */
-        print("Entrez un nouveau mot de passe : ");
-        String saisie = saisieReponse();
-        print("Confirmez votre mot de passe : ");
-        String saisie2 = saisieReponse();
+        String saisie = saisieReponse("Entrez un nouveau mot de passe : ");
+        String saisie2 = saisieReponse("Confirmez votre mot de passe : ");
         if (!equals(saisie, saisie2)) {
             println(ANSI_RED + "Les deux mots de passe ne correspondent pas." + ANSI_RESET);
             return newMDP();
@@ -541,8 +588,7 @@ class Main extends Program {
          * 
          * @return Saisie valide du mot de passe
          */
-        print("Saisissez votre mot de passe (retour pour quitter) : ");
-        String saisie = cryptage(saisieReponse(), '¤');
+        String saisie = cryptage(saisieReponse("Saisissez votre mot de passe (retour pour quitter) : "), '¤');
         if(equals(cryptage("retour", '¤'), saisie)) {
             return false;
         }
@@ -568,30 +614,13 @@ class Main extends Program {
         affichageDrapeau();
         affichageText(ANSI_RED + "Bienvenue sur DoubleLangue !" + ANSI_RESET + "\nPour commencer, merci d'entrer votre nom d'utilisateur.\n" + ANSI_BLUE + "Votre progression sera sauvegardée par le biais de ce nom." + ANSI_RESET);
         while(!valide) {
-            print("Nom d'utilisateur (exit pour quitter) : ");
-            String nom = toUpperCase(saisieReponse(false));
+            String nom = removeComa(toUpperCase(saisieReponse(false, "Nom d'utilisateur (exit pour quitter) : ")));
             if (playerExists(nom)) {
                 actualPlayer = getPlayerByName(nom);
                 affichageText("Utilisateur " + actualPlayer.username + " trouvé.");
                 
                 // Vérification que les niveaux complétés ne dépassent pas le nombre de niveaux existants 
-                if (actualPlayer.trainingCompleted > length(trainingLevels)) {
-                    actualPlayer.trainingCompleted = 0;
-                    affichageText("Une incohérence a été remarquée dans les niveaux d'entraînements complétés. Nous avons remis tout ça en ordre ne vous en faites pas ;)");
-                }
-                if (actualPlayer.storyCompleted > length(dialogues)) {
-                    actualPlayer.storyCompleted = 0;
-                    affichageText("Une incohérence a été remarquée dans les niveaux histoire complétés. Nous avons remis tout ça en ordre ne vous en faites pas ;)");
-                }
-                if (equals(actualPlayer.mdp, " ")) { // Connexion au jeu avec un ancien compte (sans mot de passe)
-                    affichageText("Aucun mot de passe n'a été définit.");
-                    actualPlayer.mdp = newMDP();
-                    valide = true;
-                } else {
-                    if(checkMDP()) {
-                        valide = true;
-                    }
-                }
+                valide = checkPlayer();
             } else {
                 if (equals(nom, "EXIT")) {
                     affichageText("Fermeture du jeu . . .");
@@ -604,24 +633,66 @@ class Main extends Program {
                     addCustomLevel(new int[]{1, 1, 1, 1, 1});
                 }
                 else {
-                    affichageText("Aucun utilisateur trouvé.");
-                    print("Souhaitez-vous créer un nouvel utilisateur du nom de " + nom + " ? (o/n) ");
-                    String validation = saisieReponse();
-                    if (isYes(validation)) {
-                        affichageText("Création du compte en cours . . .");
-                        Player p = newPlayer(nom, " ");
-                        actualPlayer = p;
-                        actualPlayer.mdp = newMDP();
-                        addAndSavePlayer(p);
-                        affichageText("Compte créé ! Votre progression sera sauvegardée !", 0);
-                        affichageText("Bienvenue sur DoubleLangue !", 0);
-                        valide = true;
-                    }
+                    valide = createAccount(nom);
                 }
             }
         }
         savePlayerCSV();
         mainMenu();
+    }
+
+    boolean checkPlayer() {
+        /**
+         * Vérifications du joueur actuel concernant sa progression et son mot de passe.
+         * Si le joueur n'a pas de mot de passe, il devra en faire un
+         * Sinon, il devra entrer son mot de passe.
+         * 
+         * Si une incohérence est remarquée dans la progression du joueur, un message sera affiché et la progression sera réinitialisée.
+         * 
+         * @return Joueur et mot de passe valides
+         */
+        boolean valide = false;
+        if (actualPlayer.trainingCompleted > length(trainingLevels)) {
+            actualPlayer.trainingCompleted = 0;
+            affichageText("Une incohérence a été remarquée dans les niveaux d'entraînements complétés. Nous avons remis tout ça en ordre ne vous en faites pas ;)");
+        }
+        if (actualPlayer.storyCompleted > length(dialogues)) {
+            actualPlayer.storyCompleted = 0;
+            affichageText("Une incohérence a été remarquée dans les niveaux histoire complétés. Nous avons remis tout ça en ordre ne vous en faites pas ;)");
+        }
+        if (equals(actualPlayer.mdp, " ")) { // Connexion au jeu avec un ancien compte (sans mot de passe)
+            affichageText("Aucun mot de passe n'a été définit.");
+            actualPlayer.mdp = newMDP();
+            valide = true;
+        } else {
+            if(checkMDP()) {
+                valide = true;
+            }
+        }
+        return valide;
+    }
+
+    boolean createAccount(String nom) {
+        /**
+         * Demande au joueur s'il veut créer un nouvel utilisateur
+         * 
+         * @param nom : Nom d'utilisateur du joueur
+         * @return Joueur correctement créé
+         */
+        boolean valide = false;
+        affichageText("Aucun utilisateur trouvé.");
+        String validation = saisieReponse("Souhaitez-vous créer un nouvel utilisateur du nom de " + nom + " ? (o/n) ");
+        if (isYes(validation)) {
+            affichageText("Création du compte en cours . . .");
+            Player p = newPlayer(nom, " ");
+            actualPlayer = p;
+            actualPlayer.mdp = newMDP();
+            addAndSavePlayer(p);
+            affichageText("Compte créé ! Votre progression sera sauvegardée !", 0);
+            affichageText("Bienvenue sur DoubleLangue !", 5000);
+            valide = true;
+        }
+        return valide;
     }
     
     // Menu principal ---------------------------------------------------------------------------------------
@@ -638,8 +709,7 @@ class Main extends Program {
         affichageDrapeau();
         affichageText("=========== Bienvenue " + ANSI_GREEN + actualPlayer.username + ANSI_RESET + " ===========", 0);
         affichageText("Choisissez votre mode de jeu :\n0. Déconnexion\n1. Mode histoire (Progression : " + (actualPlayer.storyCompleted * 100 / length(dialogues)) + " %)\n2. Mode entraînement (Progression : " + (actualPlayer.trainingCompleted * 100 / length(trainingLevels)) + " %)\n3. Questions et niveaux personnalisés (" + ANSI_BLINK_SLOW + ANSI_RED + "Nouveau!" + ANSI_RESET + ")\n4. Règles du jeu \n5. Paramètres", 0);
-        affichageText("Entrez votre choix : ", 0, false);
-        int option = saisieNombreEntier(5);
+        int option = saisieNombreEntier(5, "Entrez votre choix : ");
         switch (option) {
             case 0:
                 affichageText("Votre progression va être sauvegardée. Veuillez patienter . . .");
@@ -667,16 +737,14 @@ class Main extends Program {
     void rules() {
         /**
          * Affichage des règles de base du jeu
-         * Cette fonction ne fait qu'une série d'affichage
+         * Récupération du fichier rules.txt dans le dossier ressources
          */
         clearScreen();
         affichageText(ANSI_BOLD + "Bienvenue sur " + ANSI_GREEN + "DoubleLangue !" + ANSI_RESET);
-        affichageText("Les règles du jeu sont très simple ! Une question vous sera posée. Elle peut être de type QCM ou d'entrée.", 0);
-        affichageText("Entrez la réponse que vous pensez correcte (le nombre de la réponse pour une QCM, ou le texte entier dans les questions d'entrées)", 0);
-        affichageText("Attention ! Vous avez un nombre limité d'erreur ! Vous avez le droit à 5 tentatives par niveau d'entraînement et 3 tentatives par question du mode histoire.", 0);
-        affichageText("Soyez prudent ! Les questions de type entrée sont sensibles aux accents ! Les raccourcis sont également considérés comme faux, même s'ils peuvent être vrais dans certaines situations orales.", 0);
-        affichageText("Vous trouverez plus d'informations sur notre wiki : https://github.com/IceCubeFr/Double-Langue/wiki", 0);
-        affichageText("Crédits : Florian GAVOILLE - Développement / Chloé TISON - Développement et rédaction", 0);
+        File f = newFile(RULES_PATH);
+        while(ready(f)) {
+            affichageText(readLine(f), 0);
+        }
         affichageText("Appuyez sur " + ANSI_ITALIC + "entrée" + ANSI_RESET + " pour continuer", 0, false);
         readString();
         mainMenu();
@@ -689,8 +757,8 @@ class Main extends Program {
          */
         clearScreen();
         affichageText(ANSI_GREEN + "========= Niveaux personnalisés =========" + ANSI_RESET, 0);
-        affichageText("Sélectionnez le mode :\n0. Retour\n1. Jouer aux niveaux perso\n2. Mode création\nSélection : ", 0, false);
-        int saisie = saisieNombreEntier(2);
+        affichageText("Sélectionnez le mode :\n0. Retour\n1. Jouer aux niveaux perso\n2. Mode création", 0);
+        int saisie = saisieNombreEntier(2, "Votre sélection : ");
         switch(saisie) {
             case 0:
                 mainMenu();
@@ -710,8 +778,7 @@ class Main extends Program {
          * L'utilisateur choisira entre créer une question et un niveau
          */
         affichageText("Que souhaitez-vous créer ?\n0. Rien\n1. Nouvelle question\n2. Nouveau niveau", 0);
-        affichageText("Sélection : ", 0, false);
-        int saisie = saisieNombreEntier(2);
+        int saisie = saisieNombreEntier(2, "Sélection : ");
         switch(saisie) {
             case 0:
                 mainMenu();
@@ -727,7 +794,7 @@ class Main extends Program {
 
     // Gestion des saisies ---------------------------------------------------------------------------------------
 
-    int saisieNombreEntier(int maxOption) {
+    int saisieNombreEntier(int maxOption, String message) {
         /**
          * Contrôle la saisie d'un nombre entier par l'utilisateur entre 0 et le nombre maximum définit en paramètre
          * 
@@ -736,23 +803,14 @@ class Main extends Program {
          * La fonction peut être utilisée dans les menus par exemple
          * 
          * @param maxOption : Chiffre maximum pouvant être entré par l'utilisateur
+         * @param message : Message à afficher avant l'attente de saisie de l'utilisateur
          * @return Entier entré par l'utilisateur
-         * @see mainMenu() pour un exemple d'utilisation
+         * @see saisieNombreEntier(minOption, maxOption, message)
          */
-        boolean valide = false;
-        String saisie = "";
-        while(!valide) {
-            saisie = readString();
-            if(length(saisie) == 1 && contains("0123456789", charAt(saisie, 0)) && stringToInt(saisie) <= maxOption) {
-                valide = true;
-            } else {
-                println("Saisie incorrecte.");
-            }
-        }
-        return stringToInt(saisie);
+        return saisieNombreEntier(0, maxOption, message);
     }
 
-    int saisieNombreEntier(int minOption, int maxOption) {
+    int saisieNombreEntier(int minOption, int maxOption, String message) {
         /**
          * Contrôle la saisie d'un nombre entier par l'utilisateur entre le nombre minimum et le nombre maximum définits en paramètre
          * 
@@ -761,12 +819,13 @@ class Main extends Program {
          * 
          * @param minOption : Chiffre minimum pouvant être entré par l'utilisateur
          * @param maxOption : Chiffre maximum pouvant être entré par l'utilisateur
+         * @param message : Message à afficher avant l'attente de saisie de l'utilisateur
          * @return Entier entré par l'utilisateur
-         * @see saisieNombreEntier(int maxOption)
          */
         boolean valide = false;
         String saisie = "";
         while(!valide) {
+            affichageText(message, 0, false);
             saisie = readString();
             if(length(saisie) == 1 && contains("0123456789", charAt(saisie, 0)) && stringToInt(saisie) <= maxOption && stringToInt(saisie) >= minOption) {
                 valide = true;
@@ -777,36 +836,21 @@ class Main extends Program {
         return stringToInt(saisie);
     }
 
-    boolean isGoodInputAnswer(Question q, String a) {
+    String removeSpecials(String txt) {
         /**
-         * Vérifie si la réponse du joueur correspond à la réponse attendue de la question INPUT
+         * Fonction récursive renvoyant la chaîne en paramètre sans les caractères spéciaux
          * 
-         * Cette fonction supprime les espaces, caractères spéciaux et la casse évitant les problèmes liés
-         *  
-         * @param q : Question correspondante
-         * @param a : Réponse de l'utilisateur
-         * @return Correspondance de la réponse à la question et de celle entrée par l'utilisateur
+         * @param txt : Chaîne de départ
+         * @return Chaîne sans caractère spécial
          */
-        a = toUpperCase(a); // Transformation de la réponse en une réponse évitant les problèmes de casse et de ponctuation
-        String bonneReponse = toUpperCase(q.answerInput); // Même opération pour les questions stockées dans l'optique d'une nouvelle fonctionnalité de questions personnalisées (et facilitant la lecture en bdd)
-        String res = "";
-        for(int indice = 0; indice < length(a); indice++) {
-            char carac = charAt(a, indice);
-            if (carac >= 'A' && carac <= 'Z') {
-                res += carac;
-            }
+        if(length(txt) == 0) {
+            return "";
         }
-        String ans = "";
-        for(int indice = 0; indice < length(bonneReponse); indice++) {
-            char carac = charAt(bonneReponse, indice);
-            if (carac >= 'A' && carac <= 'Z') {
-                ans += carac;
-            }
+        char carac = charAt(txt, 0);
+        if(carac >= 'a' && carac <= 'z' || carac >= 'A' && carac <= 'Z') {
+            return "" + carac + removeSpecials(substring(txt, 1, length(txt)));
         }
-        if (equals(ans, res)) {
-            return true;
-        }
-        return false;
+        return "" + removeSpecials(substring(txt, 1, length(txt)));
     }
 
     boolean isGoodQCMAnswer(Question q, int a) {
@@ -822,7 +866,13 @@ class Main extends Program {
         return q.answerQCM + 1 == a;
     }
 
-    String saisieReponse() {
+    void testIsGoodQCMAnswer() {
+        Question q = new Question();
+        q.answerQCM = 2;
+        assertTrue(isGoodQCMAnswer(q, 3));
+    }
+
+    String saisieReponse(String message) {
         /**
          * Récupère et renvoie l'entrée d'un utilisateur
          * 
@@ -830,23 +880,25 @@ class Main extends Program {
          * 
          * @return Entrée utilisateur
          */
-        return readString();
-    } 
+        return saisieReponse(true, message);
+    }
 
-    String saisieReponse(boolean canBeEmpty) {
+    String saisieReponse(boolean canBeEmpty, String message) {
         /**
          * Récupère et renvoie l'entrée d'un utilisateur
          * 
          * Si le paramètre est sur true, la fonction n'acceptera pas les entrées vides
          * 
          * @param canBeEmpty : Entrée vide de l'utilisateur valide ou non
+         * @param message : Message à afficher avant l'attente de saisie de l'utilisateur
          * @return Entrée utilisateur
          * @see saisieReponse()
          */
+        affichageText(message, 0, false);
         String saisie = readString();
         if(!canBeEmpty && equals(saisie, "")) {
             println(ANSI_RED + "L'entrée ne peut pas être vide. Réessayez" + ANSI_RESET);
-            return saisieReponse(canBeEmpty);
+            return saisieReponse(canBeEmpty, message);
         }
         return saisie;
     } 
@@ -878,8 +930,7 @@ class Main extends Program {
                 affichageText("0. Retour\n1. Rejouer un niveau\n2. Continuer vers le niveau " + (actualPlayer.trainingCompleted + 1), 0);
                 max = 2;
             }
-            affichageText("Entrez votre sélection : ", 0, false);
-            int saisie = saisieNombreEntier(max);
+            int saisie = saisieNombreEntier(max, "Entrez votre sélection : ");
             switch(saisie) {
                 case 0:
                     savePlayerCSV();
@@ -930,9 +981,8 @@ class Main extends Program {
         }
         choices += "==========================";
         println(choices);
-        affichageText("Saisissez votre choix : ", 0, false);
 
-        int saisie = saisieNombreEntier(limite);
+        int saisie = saisieNombreEntier(limite, "Saisissez votre choix : ");
         switch(saisie) {
             case 0:
                 if(page == 0) {trainingModeSelection();}
@@ -942,7 +992,7 @@ class Main extends Program {
                 trainingSelection(page+1);
                 return;
             default:
-                playTraining(saisie + 8 * page);
+                playTraining(saisie + 8 * page - 1);
                 return;
         }
     }
@@ -961,23 +1011,44 @@ class Main extends Program {
         while (question < length(niveau) && tentatives > 0) {
             if(niveau[question].type == QuestionType.QCM) {
                 affichageQCM(niveau[question], question + 1);
-                while(tentatives > 0 && !isGoodQCMAnswer(niveau[question], saisieNombreEntier(4))) {
+                while(tentatives > 0 && !isGoodQCMAnswer(niveau[question], saisieNombreEntier(4, "Votre réponse : "))) {
                     tentatives -= 1;
-                    affichageText("Mauvaise réponse. Il vous reste " + tentatives + " tentative(s)");
+                    affichageText(ANSI_RED + "Mauvaise réponse. Il vous reste " + tentatives + " tentative(s)" + ANSI_RESET);
                 }
             } else {
                 affichageInput(niveau[question], question + 1);
-                while(tentatives > 0 && !isGoodInputAnswer(niveau[question], saisieReponse())) {
+                String res = removeSpecials(toUpperCase(niveau[question].answerInput));
+                String uRes = removeSpecials(toUpperCase(saisieReponse(false, "Votre réponse : ")));
+                while(tentatives > 0 && !equals(res, uRes)) {
                     tentatives -= 1;
-                    affichageText("Mauvaise réponse. Il vous reste " + tentatives + " tentative(s)");
+                    affichageText(ANSI_RED + "Mauvaise réponse. Il vous reste " + tentatives + " tentative(s)" + ANSI_RESET);
+                    uRes = removeSpecials(toUpperCase(saisieReponse(false, "Votre réponse : ")));
                 }
             }
             if (tentatives > 0) {
-                affichageText("Bonne réponse !");
+                affichageText(ANSI_GREEN + "Bonne réponse !" + ANSI_RESET);
                 question++;
             }
         }
-
+        if(tentatives == 0) {
+            Question q = niveau[question];
+            String answer = "";
+            if(q.type == QuestionType.QCM) {
+                switch(q.answerQCM) {
+                    case 0:
+                        answer = q.choix1;
+                    case 1:
+                        answer = q.choix2;
+                    case 2:
+                        answer = q.choix3;
+                    case 3:
+                        answer = q.choix4;
+                }
+            } else {
+                answer = q.answerInput;
+            }
+            affichageText(ANSI_RED + ANSI_BOLD + "La bonne réponse était " + answer + ". Retente ta chance !" + ANSI_RESET);
+        }
         return tentatives;
     }
 
@@ -1018,7 +1089,7 @@ class Main extends Program {
         }
     }
 
-    // Jouer niveaux customs
+    // Jouer niveaux customs ---------------------------------------------------------------------------------------
 
     void playCustom(int[] questions, int tentatives) {
         /**
@@ -1077,9 +1148,8 @@ class Main extends Program {
         }
         choices += "==========================";
         affichageText(choices, 0);
-        affichageText("Saisissez votre choix : ", 0, false);
 
-        int saisie = saisieNombreEntier(limite);
+        int saisie = saisieNombreEntier(limite, "Saisissez votre choix : ");
         switch(saisie) {
             case 0:
                 if(page == 0) {customModes();}
@@ -1089,7 +1159,7 @@ class Main extends Program {
                 selectionCustomLevel(page+1);
                 return;
             default:
-                playCustom(customLevels[saisie], tentatives);
+                playCustom(customLevels[saisie - 1], tentatives);
                 break;
             
         }
@@ -1111,12 +1181,17 @@ class Main extends Program {
         String[] messages = new String[]{FEY_LA_FEE + " : \"C'est bien ce que je pensais, tu n'es pas à la hauteur... Reviens quand tu seras prêt.\"", FEY_LA_FEE + " : \"Attention, si tu ne réponds pas correctement, je ne vais pas pouvoir te laisser continuer\"", FEY_LA_FEE + " : \"Oh oh, on dirait que ce n’est pas la bonne réponse, réessaie !\""};
         affichageInput(q);
         while(tentatives > 0) {
-            if(isGoodInputAnswer(q, saisieReponse())) {
+            String res = removeSpecials(toUpperCase(q.answerInput));
+            String uRes = removeSpecials(toUpperCase(saisieReponse(false, "Votre réponse : ")));
+            if(equals(res, uRes)) {
                 return true;
             }
             tentatives = tentatives - 1;
             affichageText(messages[tentatives]);
         }
+        affichageText(".", 1000, false);
+        affichageText(".", 1000, false);
+        affichageText(".", 1000, false);
         return false;
     }
 
@@ -1177,8 +1252,8 @@ class Main extends Program {
         affichageText(".", 500, false);
         affichageText(".", 500);
         savePlayerCSV();
-        affichageText("Vous venez de terminer la partie " + actualPlayer.storyCompleted + " du mode histoire. Souhaitez-vous continuer ? (o/n)",0, false);
-        if(isYes(saisieReponse())) {
+        affichageText("Vous venez de terminer la partie " + actualPlayer.storyCompleted + " du mode histoire.",0, false);
+        if(isYes(saisieReponse("Souhaitez-vous continuer ? (o/n)"))) {
             clearScreen();
             story(actualPlayer.storyCompleted);
         }
@@ -1196,8 +1271,8 @@ class Main extends Program {
          * @param level : Avancée du joueur et niveau à lancer
          */
         if (length(dialogues) == level) {
-            affichageText("Vous avez terminé le mode histoire ! Félicitations ! Souhaitez-vous recommencer ? Attention ! Votre progression sera écrasée ! (o/n)", 0, false);
-            if(isYes(saisieReponse())) {
+            affichageText("Vous avez terminé le mode histoire ! Félicitations !", 0, false);
+            if(isYes(saisieReponse("Souhaitez-vous recommencer ? Attention ! Votre progression sera écrasée ! (o/n)"))) {
                 actualPlayer.storyCompleted = 0;
                 affichageText("Progression écrasée. See you soon et bonne chance dans votre quête !");
             } else {
@@ -1226,8 +1301,7 @@ class Main extends Program {
         clearScreen();
         affichageText("=========== Paramètres du jeu ============", 0);
         affichageText("Choisissez un paramètre :\n0. Retour\n1. Modifier votre pseudo\n2. Réinitialiser le profil\n3. Définir un nouveau mot de passe\n4. Supprimer votre compte", 0);
-        affichageText("Saisissez votre choix : ", 0, false);
-        int entree = saisieNombreEntier(4);
+        int entree = saisieNombreEntier(4, "Saisissez votre choix : ");
         switch(entree) {
             case 0:
                 mainMenu();
@@ -1256,10 +1330,10 @@ class Main extends Program {
          * Fonction de suppression du joueur de la base de données
          * Cette fonction effectue 2 vérifications supplémentaires sur la volonté de l'utilisateur de supprimer son compte et demande le mot de passe
          */
-        affichageText(ANSI_BOLD + ANSI_RED + "Attention ! Cette action est irréversible ! Êtes vous sûrs de vouloir supprimer votre compte ? (o/n) " + ANSI_RESET, 0, false);
-        if(isYes(saisieReponse())) {
-            affichageText("Dernière chance de revenir en arrière ! Voulez-vous vraiment supprimer votre compte ? (o/n) ", 0, false);
-            if(isYes(saisieReponse())) {
+        affichageText(ANSI_BOLD + ANSI_RED + "Attention ! Cette action est irréversible ! ", 0, false);
+        if(isYes(saisieReponse("Êtes vous sûrs de vouloir supprimer votre compte ? (o/n) " + ANSI_RESET))) {
+            affichageText("Dernière chance de revenir en arrière ! ", 0, false);
+            if(isYes(saisieReponse("Voulez-vous vraiment supprimer votre compte ? (o/n) "))) {
                 if(checkMDP()) {
                     affichageText(ANSI_RED + "Suppresion en cours du compte . . ." + ANSI_RESET, 2000);
                     Player[] newPlayerList = new Player[length(playerList) - 1];
@@ -1291,8 +1365,7 @@ class Main extends Program {
          * Modification du nom d'utilisateur du joueur
          * La fonction vérifie si le nom d'utilisateur n'est pas déjà utilisé
          */
-        affichageText("Entrez votre nouveau nom d'utilisateur (entrez annuler pour revenir en arrière) : ", 0, false);
-        String newUsername = toUpperCase(saisieReponse());
+        String newUsername = toUpperCase(saisieReponse("Entrez votre nouveau nom d'utilisateur (entrez annuler pour revenir en arrière) : "));
         if (equals(newUsername, "annuler")) {
             affichageText("Annulation . . .");
             settings();
@@ -1300,9 +1373,10 @@ class Main extends Program {
             affichageText("Nom d'utilisateur déjà utilisé.");
             editUsername();
         } else {
-            affichageText("Êtes vous sur de vouloir modifier votre nom d'utilisateur (Ancien : " + actualPlayer.username + " / Nouveau : " + newUsername + ") ? (o/n)", 0, false);
-            if(isYes(saisieReponse())) {
+            if(isYes(saisieReponse("Êtes vous sur de vouloir modifier votre nom d'utilisateur (Ancien : " + actualPlayer.username + " / Nouveau : " + newUsername + ") ? (o/n)"))) {
+                String mdp = decryptage(actualPlayer.mdp, '¤');
                 actualPlayer.username = newUsername;
+                actualPlayer.mdp = cryptage(mdp, '¤');
                 affichageText("Votre nom d'utilisateur a été mis à jour !");
             } else {
                 affichageText("Annulation . . .");
@@ -1317,10 +1391,8 @@ class Main extends Program {
          * Fonction de réinitialisation de la progression du joueur
          * Cette fonction effectue 2 vérifications supplémentaires sur la volonté de l'utilisateur de supprimer sa progression et demande le mot de passe
          */
-        affichageText("Êtes-vous sur de vouloir réinitialiser votre profil ? Cette action est irréversible. (o/n)", 0, false);
-        if(isYes(saisieReponse())) {
-            affichageText("Dernière chance d'annuler la réinitialisation. Souhaitez-vous vraiment tout supprimer ? (o/n)", 0, false);
-            if(isYes(saisieReponse())) {
+        if(isYes(saisieReponse("Êtes-vous sur de vouloir réinitialiser votre profil ? Cette action est irréversible. (o/n)"))) {
+            if(isYes(saisieReponse("Dernière chance d'annuler la réinitialisation. Souhaitez-vous vraiment tout supprimer ? (o/n)"))) {
                 if(checkMDP()) {
                     actualPlayer = newPlayer(actualPlayer.username, actualPlayer.mdp);
                     savePlayerCSV();
@@ -1347,6 +1419,11 @@ class Main extends Program {
         return q;
     }
 
+    void testNewquestion() {
+        assertEquals(QuestionType.INPUT, newQuestion(QuestionType.INPUT).type);
+        assertEquals(QuestionType.QCM, newQuestion(QuestionType.QCM).type);
+    }
+
     void selectionType() {
         /**
          * Selection du type de question que le joueur souhaite créer
@@ -1358,8 +1435,7 @@ class Main extends Program {
         affichageText("Choisissez le type de question que vous souhaitez créer parmi :", 0);
         affichageText("1. QCM", 0);
         affichageText("2. INPUT", 0);
-        affichageText("Votre choix : ", 0, false);
-        int saisie = saisieNombreEntier(1,2);
+        int saisie = saisieNombreEntier(1,2, "Votre choix : ");
         if(saisie == 1) {
             creationQCM();
         } else {
@@ -1375,20 +1451,14 @@ class Main extends Program {
          */
         Question q = newQuestion(QuestionType.QCM);
         boolean valide = false;
-        affichageText("Quel est l'intitulé de la question (exemple : Quelle est la traduction de 'blue') : ", 0, false);
-        q.question = saisieReponse(false);
+        q.question = saisieReponse(false, "Quel est l'intitulé de la question (exemple : Quelle est la traduction de 'blue') : ");
         affichageText("Bien. Maintenant, vous allez saisir les 4 choix possible par l'utilisateur.", 0);
-        affichageText("Entrez la réponse 1 : ", 0, false);
-        q.choix1 = saisieReponse(false);
-        affichageText("Entrez la réponse 2 : ", 0, false);
-        q.choix2 = saisieReponse(false);
-        affichageText("Entrez la réponse 3 : ", 0, false);
-        q.choix3 = saisieReponse(false);
-        affichageText("Entrez la réponse 4 : ", 0, false);
-        q.choix4 = saisieReponse(false);
+        q.choix1 = saisieReponse(false, "Entrez la réponse 1 : ");
+        q.choix2 = saisieReponse(false, "Entrez la réponse 2 : ");
+        q.choix3 = saisieReponse(false, "Entrez la réponse 3 : ");
+        q.choix4 = saisieReponse(false, "Entrez la réponse 4 : ");
         affichageText("Parmi ces réponses, laquelle est la bonne ? \n0. " + q.choix1 +  "\n1. " + q.choix2 +"\n2. " + q.choix3 + "\n3. " + q.choix4, 0);
-        affichageText("Bonne réponse : ", 0, false);
-        q.answerQCM = saisieNombreEntier(3);
+        q.answerQCM = saisieNombreEntier(3, "Bonne réponse : ");
         affichageText("Voyons en revue tout ce que vous avez entré : ");
         while(!valide) {
             clearScreen();
@@ -1403,36 +1473,29 @@ class Main extends Program {
             println("6. Bonne réponse (Réponse " + (q.answerQCM + 1) + ")");
             println("7. Valider");
             println("=======================");
-            print("Entrez votre choix : ");
-            int saisie = saisieNombreEntier(7);
+            int saisie = saisieNombreEntier(7, "Entrez votre choix : ");
             switch(saisie) {
                 case 0:
                     mainMenu();
                     return;
                 case 1:
-                    affichageText("Quel est l'intitulé de la question (exemple : Quelle est la traduction de 'blue') : ", 0, false);
-                    q.question = saisieReponse(false);
+                    q.question = saisieReponse(false, "Quel est l'intitulé de la question (exemple : Quelle est la traduction de 'blue') : ");
                     break;
                 case 2:
-                    affichageText("Entrez la réponse 1 : ", 0, false);
-                    q.choix1 = saisieReponse(false);
+                    q.choix1 = saisieReponse(false, "Entrez la réponse 1 : ");
                     break;
                 case 3:
-                    affichageText("Entrez la réponse 2 : ", 0, false);
-                    q.choix2 = saisieReponse(false);
+                    q.choix2 = saisieReponse(false, "Entrez la réponse 2 : ");
                     break;
                 case 4:
-                    affichageText("Entrez la réponse 3 : ", 0, false);
-                    q.choix3 = saisieReponse(false);
+                    q.choix3 = saisieReponse(false, "Entrez la réponse 3 : ");
                     break;
                 case 5:
-                    affichageText("Entrez la réponse 4 : ", 0, false);
-                    q.choix4 = saisieReponse(false);
+                    q.choix4 = saisieReponse(false, "Entrez la réponse 4 : ");
                     break;
                 case 6:
                     affichageText("Parmi ces réponses, laquelle est la bonne ? \n0. " + q.choix1 +  "\n1. " + q.choix2 +"\n2. " + q.choix3 + "\n3. " + q.choix4, 0);
-                    affichageText("Bonne réponse : ", 0, false);
-                    q.answerQCM = saisieNombreEntier(3);
+                    q.answerQCM = saisieNombreEntier(3, "Bonne réponse : ");
                     break;
                 case 7:
                     valide = true;
@@ -1445,7 +1508,7 @@ class Main extends Program {
         q.choix3 = removeComa(q.choix3);
         q.choix4 = removeComa(q.choix4);
         addQuestionToList(q);
-        mainMenu();
+        customModes();
     }
 
     void creationINPUT() {
@@ -1456,10 +1519,8 @@ class Main extends Program {
          */
         Question q = newQuestion(QuestionType.INPUT);
         boolean valide = false;
-        affichageText("Quel est l'intitulé de la question (exemple : Quelle est la traduction de 'blue') : ", 0, false);
-        q.question = saisieReponse(false);
-        affichageText("Quelle est la réponse à la question ? ", 0, false);
-        q.answerInput = saisieReponse(false);
+        q.question = saisieReponse(false, "Quel est l'intitulé de la question (exemple : Quelle est la traduction de 'blue') : ");
+        q.answerInput = saisieReponse(false, "Quelle est la réponse à la question ? ");
         affichageText("Bien. Passons en revue votre saisie : ");
         while(!valide) {
             clearScreen();
@@ -1470,19 +1531,16 @@ class Main extends Program {
             println("2. Réponse (" + q.answerInput + ")");
             println("3. Valider");
             println("=======================");
-            print("Entrez votre choix : ");
-            int saisie = saisieNombreEntier(3);
+            int saisie = saisieNombreEntier(3, "Entrez votre choix : ");
             switch(saisie) {
                 case 0:
                     mainMenu();
                     return;
                 case 1:
-                    affichageText("Quel est l'intitulé de la question (exemple : Quelle est la traduction de 'blue') : ", 0, false);
-                    q.question = saisieReponse(false);
+                    q.question = saisieReponse(false, "Quel est l'intitulé de la question (exemple : Quelle est la traduction de 'blue') : ");
                     break;
                 case 2:
-                    affichageText("Quelle est la réponse à la question ? ", 0, false);
-                    q.answerInput = saisieReponse(false);
+                    q.answerInput = saisieReponse(false, "Quelle est la réponse à la question ? ");
                     break;
                 case 3:
                     valide = true;
@@ -1491,7 +1549,8 @@ class Main extends Program {
         q.question = removeComa(q.question);
         q.answerInput = removeComa(q.answerInput);
         addQuestionToList(q);
-        mainMenu();
+        affichageText("Question correctement créée ! Utilisez la dans les niveaux personnalisés (Question " + (length(questionList)- 1) + ").", 3000);
+        customModes();
     }
 
     // Création de niveaux personnalisés ---------------------------------------------------------------------------------------
@@ -1529,8 +1588,7 @@ class Main extends Program {
         }
         choices += "==========================";
         println(choices);
-        print("Sélectionnez un niveau : ");
-        int saisie = saisieNombreEntier(min, limite);
+        int saisie = saisieNombreEntier(min, limite, "Sélectionnez un niveau : ");
         if(saisie == 0) {
             return selecLevel(page-1);
         }
@@ -1553,8 +1611,8 @@ class Main extends Program {
             niveau[indice] = selecLevel(0);
         }
         addCustomLevel(niveau);
-        affichageText("Niveau créé !");
-        mainMenu();
+        affichageText("Niveau créé !", 5000);
+        customModes();
     }
 
     // Initialisation du jeu ---------------------------------------------------------------------------------------

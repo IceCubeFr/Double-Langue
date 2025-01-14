@@ -1,0 +1,6 @@
+Les règles du jeu sont très simple ! Une question vous sera posée. Elle peut être de type QCM ou d'entrée.
+Entrez la réponse que vous pensez correcte (le nombre de la réponse pour une QCM, ou le texte entier dans les questions d'entrées)
+Attention ! Vous avez un nombre limité d'erreur ! Vous avez le droit à 5 tentatives par niveau d'entraînement et 3 tentatives par question du mode histoire.
+Soyez prudent ! Les questions de type entrée sont sensibles aux accents ! Les raccourcis sont également considérés comme faux, même s'ils peuvent être vrais dans certaines situations orales.
+Vous trouverez plus d'informations sur notre wiki : https://github.com/IceCubeFr/Double-Langue/wiki
+Crédits : Florian GAVOILLE - Développement / Chloé TISON - Développement et rédaction
