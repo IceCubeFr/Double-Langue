@@ -1037,12 +1037,16 @@ class Main extends Program {
                 switch(q.answerQCM) {
                     case 0:
                         answer = q.choix1;
+                        break;
                     case 1:
                         answer = q.choix2;
+                        break;
                     case 2:
                         answer = q.choix3;
+                        break;
                     case 3:
                         answer = q.choix4;
+                        break;
                 }
             } else {
                 answer = q.answerInput;
