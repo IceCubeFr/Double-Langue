@@ -5,12 +5,12 @@ class Main extends Program {
 
     // Variables et constantes globales ---------------------------------------------------------------------------------------
 
-    final String QUESTIONS_PATH = "./files/questions.csv";
-    final String TRAINING_LEVELS_PATH = "./files/trainingLevels.csv";
+    final String QUESTIONS_PATH = "./ressources/questions.csv";
+    final String TRAINING_LEVELS_PATH = "./ressources/trainingLevels.csv";
     final String PLAYERS_PATH = "./files/players.csv";
     final String CUSTOM_LEVELS_PATH = "./files/customLevels.csv";
     final String DRAPEAU_PATH = "./ressources/drapeau_en.txt";
-    final String DIALOGUES_PATH = "./files/dialogues.txt";
+    final String DIALOGUES_PATH = "./ressources/dialogues.txt";
     final String PIERRE_PATH = "./ressources/pierre.txt";
     final String VICTORY_PATH = "./ressources/victory.txt";
     final String DEFEAT_PATH = "./ressources/defeat.txt";
@@ -1798,6 +1798,36 @@ class Main extends Program {
         }
     }
 
+    boolean contains(String[] tab, String txt) {
+        /**
+         * Teste si le tableau contient le texte mit en paramètre
+         * 
+         * @param tab : Tableau de texte
+         * @param txt : Chaîne de référence
+         * @return Présence de txt dans tab
+         */
+        for(int indice = 0; indice < length(tab); indice++) {
+            if(equals(tab[indice], txt)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    void checkFiles() {
+        /**
+         * Vérifie si les fichiers du jeu sont bien créés.
+         * Si ce n'est pas le cas, les créer.
+         */
+        String[] files = getAllFilesFromDirectory("./files");
+        if(!contains(files, "players.csv")) {
+            saveCSV(new String[0][0], PLAYERS_PATH);
+        }
+        if(!contains(files, "customLevels.csv")) {
+            saveCSV(new String[0][0], CUSTOM_LEVELS_PATH);
+        }
+    }
+
     void algorithm() {
         /**
          * Lancement de toutes les initialisations
@@ -1805,6 +1835,7 @@ class Main extends Program {
          * Sinon, le jeu se lance correctement
          */
         affichageText("Lancement du jeu en cours . . .", 2000);
+        checkFiles();
         // Initialisation des fichiers CSV
         initQuestion();
         initTrainingLevels();
