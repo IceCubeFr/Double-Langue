@@ -14,14 +14,12 @@ Deux modes de jeu
 Incarnez un personnage atterit dans un monde féérique qui a totalement oublié qui il était
 ### Le mode entraînement
 Entraînez-vous aux défis que vous rencontrerez dans le mode histoire et soyez prêt à finir le jeu !
-# Notes mise à jour 1.0.1a
-La version 1.0.1a est la 2eme et dernière version Alpha avant la release 1.0. Voici une liste non exhaustive des modifications :
-- Développement et rédaction du mode Histoire
-- Ajout d'un mot de passe, nécessaire pour la connexion et local
-- Ajout d'un onglet Paramètres permettant de modifier certains paramètres
-- Modification de la structure générale du jeu
-- Réorganisation d'une partie du code
-- Plus aucun bug ne devrait être présent. Si vous en trouvez un, merci de créer un post Issues via le lien ci dessous
+
+Création de questions personnalisées
+---
+Vous pouvez créer et jouer à vos propres questions et vos propres niveaux !  
+Dans l'onglet "Questions et niveaux personnalisés", sélectionnez le mode création ou le mode jeu  
+Détails et tutoriels dans notre wiki : https://github.com/IceCubeFr/Double-Langue/wiki
 
 N'hésitez pas à proposer vos idées pour le jeu et à rapporter les bugs que vous trouvez via la catégorie "Issues" de notre GitHub : https://github.com/IceCubeFr/Double-Langue/issues
 
