@@ -1,3 +1,5 @@
+![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/IceCubeFr/Double-Langue/total?style=for-the-badge)
+
 DoubleLangue
 ===
 
