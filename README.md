@@ -41,4 +41,9 @@ Permet la compilation des fichiers présents dans 'src' et création des fichier
 ./run.sh
 ```
 Permet le lancement du jeu  
-Vous trouverez plus de tutoriels et d'informations sur le jeu sur notre wiki : 
+Vous trouverez plus de tutoriels et d'informations sur le jeu sur notre wiki.  
+
+
+-----
+Notes de l'équipe de dev :  
+Projet de S1 en développement. Aucune mise à jour ne sera faite.  
